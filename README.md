@@ -6,8 +6,8 @@ Dự án này sử dụng **Conda** (Python 3.12) và **Poetry** để quản l�
 
 ### 1. Clone repository
 ```bash
-git clone <repo-url>
-cd <repo-folder>
+git clone https://github.com/Felix-Think/CaseStudy
+cd CaseStudy
 
 ### 2. Tạo Conda Environment
 '''bash

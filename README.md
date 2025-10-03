@@ -1,43 +1,88 @@
 # CaseStudy Project
 
-## 🚀 Setup môi trường
+Dự án này sử dụng **Conda (Python 3.12)** và **Poetry** để quản lý thư viện.
 
-Dự án này sử dụng **Conda** (Python 3.12) và **Poetry** để quản lý thư viện.
+---
 
 ### 1. Clone repository
+
 ```bash
 git clone https://github.com/Felix-Think/CaseStudy
 cd CaseStudy
+```
+
+---
 
 ### 2. Tạo Conda Environment
-'''bash
+
+```bash
 conda create -n casestudy python=3.12 -y
 conda activate casestudy
+```
 
-### 3. Cài poetry nếu chưa có
+---
+
+### 3. Cài Poetry nếu chưa có
+
 #### Cài poetry toàn cục:
-'''bash
+
+```bash
 pip install poetry
+```
 
-####Kiểm tra:
+#### Kiểm tra:
+
+```bash
 poetry --version
+```
 
-### 4.Liên kết poetry với conda environment
-#### Lấy đường dẫn python trong conda:
-'''bash
-which python # Linux/MacOS
-where python # Windowns
-#### Ví dụ 
-'''swift 
+---
+
+### 4. Liên kết Poetry với Conda environment
+
+#### Lấy đường dẫn python trong Conda:
+
+```bash
+which python     # Linux / macOS
+where python     # Windows
+```
+
+#### Ví dụ:
+
+```
 /home/username/anaconda3/envs/casestudy/bin/python
-#### Chạy lệnh
+```
+
+#### Chạy lệnh liên kết:
+
+```bash
 poetry env use /home/username/anaconda3/envs/casestudy/bin/python
+```
 
-### 5. Cài dependencies từ pyproject.toml
+---
+
+### 5. Cài dependencies từ `pyproject.toml`
+
+Nếu chưa có `pyproject.toml`, khởi tạo:
+
+```bash
 poetry init
+```
+
+Sau đó cài thư viện:
+
+```bash
 poetry install
+```
 
-#### Lưu ý: khi muốn cài đặt thự viện vào trong project, ta sử dụng poetry add <package_name>
-Không được sử dụng pip install hay conda install để tránh lệnh môi trường 
+---
 
+### 💡 Lưu ý khi cài thư viện
 
+Khi muốn thêm thư viện vào project, hãy dùng:
+
+```bash
+poetry add <package_name>
+```
+
+❌ **Không sử dụng** `pip install` hay `conda install` vì sẽ làm lệch môi trường.

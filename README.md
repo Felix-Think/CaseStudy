@@ -13,9 +13,6 @@ cd CaseStudy
 
 ---
 
-
----
-
 ### 2. Cài Poetry nếu chưa có
 
 #### Cài poetry toàn cục:

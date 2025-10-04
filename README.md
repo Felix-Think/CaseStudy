@@ -13,16 +13,10 @@ cd CaseStudy
 
 ---
 
-### 2. Tạo Conda Environment
-
-```bash
-conda create -n casestudy python=3.12 -y
-conda activate casestudy
-```
 
 ---
 
-### 3. Cài Poetry nếu chưa có
+### 2. Cài Poetry nếu chưa có
 
 #### Cài poetry toàn cục:
 
@@ -38,7 +32,7 @@ poetry --version
 
 ---
 
-### 4. Liên kết Poetry với Conda environment
+### 3. Liên kết Poetry với Conda environment
 
 #### Lấy đường dẫn python trong Conda:
 
@@ -61,7 +55,7 @@ poetry env use /home/username/anaconda3/envs/casestudy/bin/python
 
 ---
 
-### 5. Cài dependencies từ `pyproject.toml`
+### 4. Cài dependencies từ `pyproject.toml`
 
 Nếu chưa có `pyproject.toml`, khởi tạo:
 

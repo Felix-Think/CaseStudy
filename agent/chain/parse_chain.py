@@ -1,5 +1,5 @@
 from typing import Dict, Any
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool
 from langchain_core.prompts import ChatPromptTemplate
@@ -10,10 +10,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+class PersonaInfo(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    Role: str = ""
+    Background: str = ""
+    Personality: str = ""
+    Notes: str = ""
+
+
 class ParseInputSchema(BaseModel):
-    objective_learning: str
-    initial_context: str
-    persona: Dict[str, Any]
+    """Schema chuẩn để parse output JSON từ LLM."""
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    Scenario_Name: str = Field(..., alias="Scenario Name")
+    Learning_Objective: Dict[str, Any] = Field(..., alias="Learning Objective")
+    Initial_Context: Dict[str, Any] = Field(..., alias="Initial Context")
+    Persona: PersonaInfo = Field(default_factory=PersonaInfo, alias="Persona (Characteristic)")
+    Current_Persona_Emotion: str = Field("", alias="Current_Persona_Emotion")
+    Current_Persona_Action: str = Field("", alias="Current_Persona_Action")
 
 llm = ChatOpenAI(
     model="gpt-4o-mini",
@@ -30,17 +46,31 @@ parse_prompt = (
         [
             (
                 "system",
-                "Bạn là AI chuyên phân tích yêu cầu xây dựng case study. "
-                "Nhiệm vụ của bạn: (1) xác định mục tiêu học tập người dạy cung cấp, "
-                "(2) nêu bối cảnh mở đầu của tình huống, (3) trích xuất thông tin nhân vật. "
-                "Trả về JSON đúng với schema:\n{format_instructions}\n"
-                "TIÊU CHÍ:\n"
-                "- objective_learning: mô tả rõ kết quả học tập.\n"
-                "- initial_context: tóm tắt bối cảnh xuất phát, trạng thái ban đầu.\n"
-                "- persona: object chứa name, role, traits (list), speaking_style."
-                " Nếu thiếu dữ liệu, trả chuỗi rỗng hoặc danh sách rỗng.\n"
-                "KHÔNG dịch nội dung; KHÔNG thêm giải thích hay markdown. "
-                "Viết đúng JSON, không phẩy thừa.",
+                "Bạn là AI chuyên phân tích và trích xuất dữ liệu case study dành cho mô hình huấn luyện nhập vai. "
+                "Nhiệm vụ của bạn: Đọc mô tả đầu vào thô và trích xuất chính xác các phần sau, trả về đúng dạng JSON. "
+                "\n\nYÊU CẦU ĐỊNH DẠNG JSON CHUẨN:"
+                "\n{{"
+                '\n  "Scenario Name": "<Tên kịch bản>",'
+                '\n  "Learning Objective": {{'
+                '\n    "Learning Objective": "<Mục tiêu học tập chi tiết, mô tả năng lực và hành vi cần đánh giá>"'
+                "\n  }},"
+                '\n  "Initial Context": {{'
+                '\n    "Enter Narrative": "<Bối cảnh mở đầu, mô tả tình huống, thời gian, địa điểm, hành động của nhân vật chính>"'
+                "\n  }},"
+                '\n  "Persona (Characteristic)": {{'
+                '\n    "Role": "<Vai trò nhân vật phụ trong tình huống>",'
+                '\n    "Background": "<Bối cảnh và mối quan hệ với nạn nhân hoặc nhân vật chính>",'
+                '\n    "Personality": "<Tính cách, cảm xúc và hành vi đặc trưng của nhân vật này>",'
+                '\n    "Notes": "<Ghi chú đặc biệt, lưu ý khi nhập vai hoặc hạn chế cần tuân thủ>"'
+                "\n  }},"
+                '\n  "Current_Persona_Emotion": "<Cảm xúc hiện tại của nhân vật phụ>",'
+                '\n  "Current_Persona_Action": "<Hành động hiện tại của nhân vật phụ>"'
+                "\n}}"
+                "\n\nHƯỚNG DẪN:"
+                "\n- Không thêm markdown, không giải thích, không dịch. "
+                "\n- Nếu thông tin thiếu, để chuỗi rỗng hoặc mô tả ngắn gọn. "
+                "\n- Phải giữ nguyên cấu trúc và tên khóa (keys) như trên, bao gồm dấu hoa, dấu ngoặc và dấu hai chấm chính xác. "
+                "\n- Nội dung phải viết bằng tiếng Việt tự nhiên, phù hợp với ngữ cảnh đào tạo nhập vai chuyên nghiệp."
             ),
             ("human", "{raw_user_input}"),
         ]
@@ -48,16 +78,62 @@ parse_prompt = (
 )
 
 
+
 # ------------------- TOOL -------------------
 @tool("parse_input_tool", return_direct=True)
 def parse_input_tool(raw_user_input: str) -> Dict[str, Any]:
     """
-    Trích xuất dữ liệu có cấu trúc từ đầu vào thô của người hướng dẫn.
-    Output gồm:
-    - objective_learning
-    - initial_context
-    - persona
+    Mô tả:
+        Công cụ này dùng để phân tích và trích xuất dữ liệu có cấu trúc từ phần mô tả thô
+        mà người hướng dẫn (hoặc người thiết kế case study) cung cấp.
+
+    Chức năng:
+        - Nhận vào một đoạn mô tả tình huống huấn luyện (bằng tiếng Việt hoặc tiếng Anh).
+        - Sử dụng mô hình ngôn ngữ để tự động nhận diện và trích xuất các phần chính:
+            1. **Scenario Name** – tên kịch bản học tập.
+            2. **Learning Objective** – mục tiêu học tập chi tiết, mô tả năng lực cần đánh giá.
+            3. **Initial Context** – bối cảnh mở đầu của tình huống (thời gian, địa điểm, nhân vật chính, sự kiện khởi đầu).
+            4. **Persona (Characteristic)** – thông tin nhân vật phụ (vai trò, hoàn cảnh, tính cách, ghi chú hành vi).
+            5. **Current_Persona** - Thông tin hiện tại của nhân vận phụ.
+            6. **Current_Persona_Emotion** - Cảm xúc hiện tại của nhân vật phụ.
+            7. **Current_Persona_Action** - Hành động hiện tại của nhân vật phụ.
+        
+    Định dạng đầu ra:
+        Trả về một `dict` (từ điển Python) theo đúng cấu trúc JSON chuẩn:
+        {
+            "Scenario Name": "<Tên kịch bản>",
+            "Learning Objective": { "Learning Objective": phụ"<Mục tiêu học tập>" },
+            "Initial Context": { "Enter Narrative": "<Bối cảnh mở đầu>" },
+            "Persona (Characteristic)": {
+                "Role": "<Vai trò>",
+                "Background": "<Bối cảnh và mối quan hệ>",
+                "Personality": "<Tính cách và cảm xúc>",
+                "Notes": "<Ghi chú đặc biệt>"
+            }
+            "Current Persona Emotion": "<Cảm xúc hiện tại của nhân vật phụ>",
+            "Current Persona Action": "<Hành động hiện tại của nhân vật phụ>" 
+        }
+
+    Tham số:
+        raw_user_input (str):
+            Đoạn mô tả thô do người thiết kế cung cấp — có thể chứa bối cảnh, mục tiêu học tập, nhân vật phụ, v.v.
+
+    Giá trị trả về:
+        Dict[str, Any]:
+            Một đối tượng từ điển chứa các trường được trích xuất theo format JSON ở trên.
+            Có thể được parse trực tiếp sang Pydantic model hoặc lưu thành GraphState.
+
+    Ví dụ:
+        >>> parse_input_tool("Tình huống: Một bé trai bị đuối nước tại hồ bơi, bác sĩ cấp cứu vừa đến hiện trường...")
+        {
+            "Scenario Name": "Cấp cứu đuối nước tại hồ bơi",
+            "Learning Objective": {...},
+            "Initial Context": {...},
+            "Persona (Characteristic)": {...}
+            "Current Persona Emotion": "Hoảng loạn",
+            "Current Persona Action": "Liên tục hỏi thăm tình trạng con mình"
+        }
     """
     chain = parse_prompt | llm | parser
     result = chain.invoke({"raw_user_input": raw_user_input})
-    return result.dict()
+    return result.model_dump(by_alias=True)

@@ -1,37 +1,39 @@
+from pathlib import Path
+from typing import Optional, Union
 
-from typing import TypedDict, Dict, Any
-import json
-from dotenv import load_dotenv
-import os
-from pydantic import BaseModel, Field
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 
-from agent.state import GraphState
-from agent.nodes.parse_input import parse_input_node
+from agent.const import GENERATE_SCENE, PARSE_OUTPUT
 from agent.nodes.generator_node import generate_scene_node
+from agent.nodes.parse_node import parse_input_node
+from agent.state import GraphState
 
-load_dotenv()
 
-graph = StateGraph(GraphState)
-graph.add_node("parse_input", parse_input_node)
-graph.add_node("generate_scene", generate_scene_node)
 
-graph.set_entry_point("parse_input")
-graph.add_edge("parse_input", "generate_scene")
-graph.add_edge("generate_scene", END)
+def build_case_study_graph(save_path: Optional[Union[str, Path]] = None):
+    """wire up the LangGraph workflow and optionally save the diagram."""
+    builder = StateGraph(GraphState)
 
-app = graph.compile()
+    builder.add_node(PARSE_OUTPUT, parse_input_node)
+    builder.add_node(GENERATE_SCENE, generate_scene_node)
+
+    builder.set_entry_point(PARSE_OUTPUT)
+    builder.add_edge(PARSE_OUTPUT, GENERATE_SCENE)
+    builder.add_edge(GENERATE_SCENE, END)
+
+    app = builder.compile()
+
+    app.get_graph().draw_mermaid_png(output_file_path= save_path) if save_path else None
+
+    return app
 
 if __name__ == "__main__":
-    test_input = """
-    Mục tiêu học tập: Hiểu và áp dụng các khái niệm cơ bản về lập trình Python.
-    Bối cảnh mở đầu: Học sinh đã có kiến thức cơ bản về lập trình.
-    Nhân vật: Một giáo viên nhiệt huyết, kiên nhẫn, luôn khuyến khích học sinh.
-    """
-    result = app.invoke({"raw_user_input": test_input})
-    print("🎯 Objective:", result["objective_learning"])
-    print("📖 Context:", result["initial_context"])
-    print("🧑 Persona:", result["persona"])
-    print("🎬 Scene:", result["generated_scene"])
+    app = build_case_study_graph(save_path="case_study_graph.png")
+    initial_state: GraphState = {
+        "raw_user_input": "Bối cảnh: 16:30 tại hồ bơi công cộng. Một bé trai 11 tuổi vừa được kéo lên bờ, đang ho sặc sụa và có lúc lịm đi. Người kể chuyện: Bạn là người bác sĩ cấp cứu từ bệnh viện vừa đến hiện trường để tiến hành sơ cứu."
+    }
+    final_state = app.invoke(initial_state)
+    print("Kết quả graph:")
+    print(final_state.get("generated_scene", "Không nhận được generated_scene."))
+    print("Toàn bộ trạng thái cuối cùng:")
+    print(final_state)

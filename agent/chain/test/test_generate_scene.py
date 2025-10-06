@@ -16,7 +16,7 @@ def test_generate_scene(input_state) -> None:
     result_state = generate_scene(input_state)
     assert "generated_scene" in result_state
     print("Kết quả tạo tình huống:")
-    print(result_state["generated_scene"])
+    print(result_state)
 
 
 test_generate_scene(input_state)

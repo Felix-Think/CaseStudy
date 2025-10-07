@@ -11,15 +11,31 @@ from agent.state import GraphState
 
 
 def _supervisor_node(state: GraphState) -> GraphState:
-    """Entry node – simply returns state for routing."""
-    return state
+    """Entry node – decide next route and attach diagnostic info."""
+    if state.get("raw_user_turn"):
+        supervisor_route = "parse_user_turn"
+    elif state.get("raw_user_input") and not (state.get("Scenario_Name") or "").strip():
+        supervisor_route = "parse_context"
+    else:
+        supervisor_route = state.get("Supervisor_Route")
+        if supervisor_route not in {"parse_context", "parse_user_turn", "scene"}:
+            supervisor_route = "scene"
+
+    return {
+        **state,
+        "Supervisor_Route": supervisor_route,
+    }
 
 
 def _route_initial(state: GraphState) -> str:
-    if state.get("raw_user_input"):
-        return "parse_context"
+    supervisor_route = state.get("Supervisor_Route")
+    if supervisor_route in {"parse_context", "parse_user_turn", "scene"}:
+        return supervisor_route
+
     if state.get("raw_user_turn"):
         return "parse_user_turn"
+    if state.get("raw_user_input") and not (state.get("Scenario_Name") or "").strip():
+        return "parse_context"
     return "scene"
 
 

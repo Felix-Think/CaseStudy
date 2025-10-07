@@ -33,3 +33,4 @@ class GraphState(TypedDict, total=False):
     Story_Phase: str
     Narrative_Mode: str
     Persona_Present: bool
+    Supervisor_Route: str

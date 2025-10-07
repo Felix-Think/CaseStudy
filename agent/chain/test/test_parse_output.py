@@ -48,8 +48,6 @@ def test_parse_input_tool() -> None:
         "Learning Objective",
         "Initial Context",
         "Persona (Characteristic)",
-        "Current_Persona_Emotion",
-        "Current_Persona_Action",
     ]
 
     for key in expected_keys:

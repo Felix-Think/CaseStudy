@@ -1,12 +1,7 @@
 from typing import Dict, Any
-import os
-import sys
+
 from agent.chain.parse_chain import parse_input_tool
 from agent.state import GraphState
-
-
-# === Thiết lập đường dẫn đến project gốc ===
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
 def parse_input_node(state: GraphState) -> GraphState:
     """Parse raw user input into the structured graph state."""
@@ -20,18 +15,32 @@ def parse_input_node(state: GraphState) -> GraphState:
     learning_objective = parsed.get("Learning Objective", {})
     initial_context = parsed.get("Initial Context", {})
     persona_characteristic = parsed.get("Persona (Characteristic)", {})
-    current_persona_emotion = parsed.get("Current_Persona_Emotion", "")
-    current_persona_action = parsed.get("Current_Persona_Action", "")
 
-    return {
+    updated_state: Dict[str, Any] = {
         **state,
         "Scenario_Name": scenario_name,
         "Learning_Objective": learning_objective,
         "Initial_Context": initial_context,
-        "Persona": persona_characteristic,
-        "Current_Persona_Emotion": current_persona_emotion,
-        "Current_Persona_Action": current_persona_action,
     }
+
+    # Chỉ thêm thông tin persona khi thực sự tồn tại trong input.
+    if any(persona_characteristic.values()):
+        normalized_persona = {
+            "role": persona_characteristic.get("Role", ""),
+            "background": persona_characteristic.get("Background", ""),
+            "personality": persona_characteristic.get("Personality", ""),
+            "notes": persona_characteristic.get("Notes", ""),
+            "traits": persona_characteristic.get("Traits", []),
+            "speaking_style": persona_characteristic.get("Speaking Style", ""),
+        }
+
+        updated_state.update(
+            {
+                "Persona": persona_characteristic,
+            }
+        )
+
+    return updated_state
 
 
 if __name__ == "__main__":
@@ -48,7 +57,6 @@ Bạn đang tuần tra khu vực và quan sát các hoạt động bơi lội.
 Đột nhiên, bạn nghe thấy tiếng la hét và một số người đang chỉ về phía cuối hồ. 
 Bạn thấy một **người lớn tuổi** đang có dấu hiệu **chìm, vùng vẫy yếu ớt** ở khu vực sâu của hồ. 
 Bạn là người đầu tiên tiếp cận hiện trường.
-
 Nhân vật phụ (persona):
 - Vai trò: [ Thân nhân của nạn nhân ]
 - Bối cảnh: Người này là mẹ của nạn nhân. Họ đang đứng gần đó khi sự việc xảy ra và vừa nhận ra con mình đang gặp nguy hiểm.

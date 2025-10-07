@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 from pydantic import BaseModel, Field, ConfigDict
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool
@@ -28,8 +28,6 @@ class ParseInputSchema(BaseModel):
     Learning_Objective: Dict[str, Any] = Field(..., alias="Learning Objective")
     Initial_Context: Dict[str, Any] = Field(..., alias="Initial Context")
     Persona: PersonaInfo = Field(default_factory=PersonaInfo, alias="Persona (Characteristic)")
-    Current_Persona_Emotion: str = Field("", alias="Current_Persona_Emotion")
-    Current_Persona_Action: str = Field("", alias="Current_Persona_Action")
 
 llm = ChatOpenAI(
     model="gpt-4o-mini",
@@ -58,18 +56,17 @@ parse_prompt = (
                 '\n    "Enter Narrative": "<Bối cảnh mở đầu, mô tả tình huống, thời gian, địa điểm, hành động của nhân vật chính>"'
                 "\n  }},"
                 '\n  "Persona (Characteristic)": {{'
-                '\n    "Role": "<Vai trò nhân vật phụ trong tình huống>",'
-                '\n    "Background": "<Bối cảnh và mối quan hệ với nạn nhân hoặc nhân vật chính>",'
-                '\n    "Personality": "<Tính cách, cảm xúc và hành vi đặc trưng của nhân vật này>",'
+                '\n    "Role": "<Vai trò của nhân vật phụ (nếu có)>",'
+                '\n    "Background": "<Bối cảnh và mối quan hệ giữa nhân vật phụ với nhân vật chính hoặc nạn nhân>",'
+                '\n    "Personality": "<Tính cách, cảm xúc và hành vi đặc trưng của nhân vật phụ>",'
                 '\n    "Notes": "<Ghi chú đặc biệt, lưu ý khi nhập vai hoặc hạn chế cần tuân thủ>"'
                 "\n  }},"
-                '\n  "Current_Persona_Emotion": "<Cảm xúc hiện tại của nhân vật phụ>",'
-                '\n  "Current_Persona_Action": "<Hành động hiện tại của nhân vật phụ>"'
                 "\n}}"
                 "\n\nHƯỚNG DẪN:"
                 "\n- Không thêm markdown, không giải thích, không dịch. "
                 "\n- Nếu thông tin thiếu, để chuỗi rỗng hoặc mô tả ngắn gọn. "
                 "\n- Phải giữ nguyên cấu trúc và tên khóa (keys) như trên, bao gồm dấu hoa, dấu ngoặc và dấu hai chấm chính xác. "
+                "\n- Chỉ điền dữ liệu nhân vật phụ trong Persona (Characteristic). Nếu đầu vào chỉ nhắc nhân vật chính, hãy trả về rỗng phần Persona. Không suy diễn."
                 "\n- Nội dung phải viết bằng tiếng Việt tự nhiên, phù hợp với ngữ cảnh đào tạo nhập vai chuyên nghiệp."
             ),
             ("human", "{raw_user_input}"),
@@ -93,10 +90,8 @@ def parse_input_tool(raw_user_input: str) -> Dict[str, Any]:
             1. **Scenario Name** – tên kịch bản học tập.
             2. **Learning Objective** – mục tiêu học tập chi tiết, mô tả năng lực cần đánh giá.
             3. **Initial Context** – bối cảnh mở đầu của tình huống (thời gian, địa điểm, nhân vật chính, sự kiện khởi đầu).
-            4. **Persona (Characteristic)** – thông tin nhân vật phụ (vai trò, hoàn cảnh, tính cách, ghi chú hành vi).
-            5. **Current_Persona** - Thông tin hiện tại của nhân vận phụ.
-            6. **Current_Persona_Emotion** - Cảm xúc hiện tại của nhân vật phụ.
-            7. **Current_Persona_Action** - Hành động hiện tại của nhân vật phụ.
+            4. **Persona (Characteristic)** – chỉ ghi thông tin nhân vật phụ (vai trò, hoàn cảnh, tính cách, ghi chú). Nếu không có nhân vật phụ, trả về các chuỗi rỗng.
+ 
         
     Định dạng đầu ra:
         Trả về một `dict` (từ điển Python) theo đúng cấu trúc JSON chuẩn:
@@ -109,9 +104,7 @@ def parse_input_tool(raw_user_input: str) -> Dict[str, Any]:
                 "Background": "<Bối cảnh và mối quan hệ>",
                 "Personality": "<Tính cách và cảm xúc>",
                 "Notes": "<Ghi chú đặc biệt>"
-            }
-            "Current Persona Emotion": "<Cảm xúc hiện tại của nhân vật phụ>",
-            "Current Persona Action": "<Hành động hiện tại của nhân vật phụ>" 
+            },
         }
 
     Tham số:
@@ -130,8 +123,6 @@ def parse_input_tool(raw_user_input: str) -> Dict[str, Any]:
             "Learning Objective": {...},
             "Initial Context": {...},
             "Persona (Characteristic)": {...}
-            "Current Persona Emotion": "Hoảng loạn",
-            "Current Persona Action": "Liên tục hỏi thăm tình trạng con mình"
         }
     """
     chain = parse_prompt | llm | parser

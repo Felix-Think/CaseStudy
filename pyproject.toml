@@ -13,7 +13,8 @@ dependencies = [
     "langchain-openai (>=0.3.34,<0.4.0)",
     "langgraph (>=0.6.8,<0.7.0)",
     "langsmith (>=0.4.32,<0.5.0)",
-    "pydantic (>=2.11.9,<3.0.0)"
+    "pydantic (>=2.11.9,<3.0.0)",
+    "pytest (>=8.4.2,<9.0.0)"
     
 ]
 

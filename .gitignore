@@ -42,7 +42,7 @@ coverage.xml
 .pytest_cache/
 
 # Virtual environments
-.env/
+casestudy/.env/
 .venv/
 env/
 venv/

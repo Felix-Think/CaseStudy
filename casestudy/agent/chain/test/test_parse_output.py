@@ -5,7 +5,7 @@ import sys
 # === Thiết lập đường dẫn đến project gốc ===
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))))
 
-from agent.chain.parse_chain import parse_input_tool
+from casestudy.agent.chain import parse_input_tool
 
 # === Dữ liệu test ===
 TEST_INPUT = """

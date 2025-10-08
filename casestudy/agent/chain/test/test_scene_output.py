@@ -1,11 +1,7 @@
 """Unit tests for the scene narration chain."""
 
-import json
-from typing import Any
-
-
-from agent.chain import Scene_chain
-from agent.state import GraphState
+from casestudy.agent.chain import Scene_chain
+from casestudy.agent.state import GraphState
 
 
 

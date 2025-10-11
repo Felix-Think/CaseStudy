@@ -24,23 +24,41 @@ def _print_section(title: str, lines: Iterable[str]) -> None:
 def _format_event(event: dict[str, Any]) -> str:
     event_id = event.get("id", "")
     title = event.get("title", "")
-    trigger = event.get("trigger", "")
+    description = event.get("description", "")
     actions = event.get("required_actions", [])
-    phase_id = event.get("phase_id", "")
+    success = event.get("success_criteria", [])
+    preconditions = event.get("preconditions", [])
+    on_success = event.get("on_success")
+    on_fail = event.get("on_fail")
+    npc_list = event.get("npc_appearance", [])
     timeout_turn = event.get("timeout_turn")
-    turns_text = f"{timeout_turn}" if timeout_turn is not None else "?"
-    npc_lines = event.get("npc_lines", [])
-    npc_text = (
-        "\n        NPC lines: " + " | ".join(str(line) for line in npc_lines)
-        if npc_lines
-        else ""
-    )
+
+    preconditions_text = ", ".join(preconditions) if preconditions else "(không có)"
+    success_text = ", ".join(success) if success else "(không nêu)"
+    on_success_text = on_success or "(kết thúc)"
+    on_fail_text = on_fail or f"{event_id}_RETRY"
+    timeout_text = str(timeout_turn) if timeout_turn is not None else "(không đặt)"
+
+    npc_lines: list[str] = []
+    for persona in npc_list:
+        persona_id = persona.get("persona_id") or ""
+        role = persona.get("role") or ""
+        note = persona.get("note") or ""
+        detail = "; ".join(part for part in [role, note] if part)
+        label = persona_id or "(ẩn danh)"
+        npc_lines.append(f"{label}: {detail}" if detail else label)
+    npc_text = " | ".join(npc_lines) if npc_lines else "(không nêu)"
+
     return (
         f"- {event_id}: {title}\n"
-        f"    Phase: {phase_id} | Timeout turns: {turns_text}\n"
-        f"    Trigger: {trigger}\n"
-        f"    Actions: {', '.join(actions) if actions else '(không nêu)'}"
-        f"{npc_text}"
+        f"    Mô tả: {description}\n"
+        f"    Preconditions: {preconditions_text}\n"
+        f"    Actions: {', '.join(actions) if actions else '(không nêu)'}\n"
+        f"    Success: {success_text}\n"
+        f"    Timeout turn: {timeout_text}\n"
+        f"    On success: {on_success_text}\n"
+        f"    On fail: {on_fail_text}\n"
+        f"    NPC: {npc_text}"
     )
 
 
@@ -53,7 +71,6 @@ def _persist_output(state: SkeletonState, output_path: Path) -> None:
     payload = {
         "case_id": state.get("case_id"),
         "canon_events": state.get("canon_events", []),
-        "telemetry": state.get("telemetry", {}),
     }
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as file:
@@ -79,19 +96,6 @@ def main() -> None:
 
     canon_events = state.get("canon_events", [])
     _print_section("Canon Events", (_format_event(evt) for evt in canon_events))
-
-    telemetry = state.get("telemetry", {})
-    telemetry_lines = []
-    if telemetry:
-        telemetry_lines.append(f"- log_events: {telemetry.get('log_events')}")
-        metrics = telemetry.get("metrics", [])
-        if metrics:
-            telemetry_lines.append(f"- metrics: {', '.join(metrics)}")
-        for rollup in telemetry.get("phase_rollup", []):
-            telemetry_lines.append(
-                f"- phase_rollup {rollup.get('phase_id')}: metrics={rollup.get('metrics')} targets={rollup.get('targets')}"
-            )
-    _print_section("Telemetry", telemetry_lines)
 
     output_path = (
         Path(output_path_arg).expanduser()

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
 from langchain_core.output_parsers import PydanticOutputParser
@@ -12,24 +12,46 @@ from pydantic import BaseModel, ConfigDict, Field
 load_dotenv()
 
 
+class PersonaPresence(BaseModel):
+    """Single persona scheduled for a phase."""
+
+    model_config = ConfigDict(populate_by_name=True, extra="ignore")
+
+    persona_id: str = Field(..., description="ID persona (ví dụ P1).")
+    role: Optional[str] = Field(
+        default=None,
+        description="Vai trò hoặc mô tả rất ngắn (nếu cần).",
+    )
+
+
 class CanonEvent(BaseModel):
     """Single canonical event that drives the scenario."""
 
     model_config = ConfigDict(populate_by_name=True, extra="ignore")
 
-    id: str = Field(..., description="Mã sự kiện duy nhất, viết hoa và dùng dấu gạch dưới.")
+    id: str = Field(..., description="Mã sự kiện duy nhất, ví dụ CE1.")
     title: str
     description: str
-    trigger: str
     preconditions: List[str]
     required_actions: List[str]
     success_criteria: List[str]
-    phase_id: str = Field(..., alias="phase_id", description="ID phase chứa sự kiện.")
-    timeout_turn: int = Field(..., alias="timeout_turn", ge=1, description="Số lượt hội thoại tối đa.")
-    npc_lines: List[str] = Field(default_factory=list, description="Các câu thoại mẫu của NPC (nếu có).")
-    fail_risk: str
-    on_success: List[str] = Field(default_factory=list)
-    on_fail: List[str] = Field(default_factory=list)
+    timeout_turn: int = Field(
+        ...,
+        ge=1,
+        description="Số lượt hội thoại tối đa trước khi xem là thất bại.",
+    )
+    npc_appearance: List[PersonaPresence] = Field(
+        default_factory=list,
+        description="Danh sách persona xuất hiện trong sự kiện.",
+    )
+    on_success: str | None = Field(
+        default=None,
+        description="ID sự kiện tiếp theo khi thành công (hoặc null nếu kết thúc).",
+    )
+    on_fail: str = Field(
+        ...,
+        description="ID sự kiện fallback khi thất bại (mặc định CE#_RETRY).",
+    )
 
 
 class SkeletonPlan(BaseModel):
@@ -39,7 +61,6 @@ class SkeletonPlan(BaseModel):
 
     case_id: str = Field(..., alias="case_id")
     canon_events: List[CanonEvent] = Field(default_factory=list, alias="canon_events")
-    telemetry: Dict[str, Any] = Field(default_factory=dict, alias="telemetry")
 
 
 _parser = PydanticOutputParser(pydantic_object=SkeletonPlan)
@@ -69,15 +90,13 @@ def _format_personas(personas: List[Dict[str, Any]]) -> str:
     for persona in personas:
         role = persona.get("role", "")
         name = persona.get("name", "")
-        traits = persona.get("traits") or persona.get("notes_for_dialogue") or []
-        goals = persona.get("goals", [])
-        snippet = [f"Vai trò: {role}"]
+        persona_id = persona.get("id") or persona.get("persona_id") or ""
+        snippet = []
+        if persona_id:
+            snippet.append(f"ID: {persona_id}")
+        snippet.append(f"Vai trò: {role}")
         if name:
             snippet.append(f"Tên: {name}")
-        if goals:
-            snippet.append("Mục tiêu: " + "; ".join(goals))
-        if traits:
-            snippet.append("Đặc điểm: " + "; ".join(str(t) for t in traits))
         blocks.append(" | ".join(snippet))
     return "\n".join(blocks) if blocks else "(không có)"
 
@@ -87,26 +106,28 @@ _prompt = ChatPromptTemplate.from_messages(
         (
             "system",
             "Bạn là chuyên gia thiết kế tình huống huấn luyện nhập vai. "
-            "Dựa trên thông tin case study, hãy xây dựng danh sách canon events chi tiết gắn với mục tiêu học tập "
-            "và đề xuất telemetry tổng quan cho toàn kịch bản. "
-            "Tuân thủ chặt schema JSON đã cho: {format_instructions}. "
-            "Luôn viết tiếng Việt chuyên nghiệp, súc tích, không lặp từ."
+            "Dựa trên thông tin case study, hãy xây dựng danh sách canon events theo đúng format JSON. "
+            "Tuân thủ chính xác schema sau: {format_instructions}. "
+            "Tất cả nội dung phải dùng tiếng Việt chuyên nghiệp, súc tích, tránh lặp từ.",
         ),
         (
             "human",
-            "case_id: {case_id}\n"
+            "CASE ID: {case_id}\n"
             "Chủ đề: {topic}\n"
+            "Ngôn ngữ: {language}\n\n"
+            "Tóm tắt bối cảnh:\n{context_summary}\n\n"
             "Mục tiêu học tập:\n{objectives_text}\n\n"
-            "Bối cảnh chính: {context_summary}\n"
-            "Nhân vật quan trọng:\n{personas_text}\n"
-            "Ngôn ngữ hiển thị: {language}\n\n"
-            "Yêu cầu chi tiết:\n"
-            "- canon_events gồm 7-10 mục, id dạng CE#_TÊN_VIẾT_HOA, mô tả hành động cụ thể, nêu rõ trigger và chỉ dẫn theo turn.\n"
-            "- Mỗi sự kiện phải có: phase_id (chỉ định nhịp câu chuyện), trigger cụ thể, preconditions, required_actions ≥3 hành động rõ ràng, success_criteria ≥2, timeout_turn ≥2.\n"
-            "- Nếu liên quan persona, thêm 'npc_lines' với ≥2 câu thoại mẫu phù hợp.\n"
-            "- on_success/on_fail: chỉ chứa id sự kiện kế tiếp; mảng rỗng nếu kết thúc một nhánh.\n"
-            "- telemetry: log_events true/false, metrics là danh sách chỉ số cấp kịch bản (dùng định dạng '<phase_id>.<metric>'), phase_rollup liệt kê mỗi phase với metrics và targets tương ứng.\n"
-            "Chỉ trả về JSON hợp lệ."
+            "Personas liên quan:\n{personas_text}\n\n"
+            "YÊU CẦU:\n"
+            "- Sinh tối thiểu canon events để bao phủ các mục tiêu học tập đã nêu, mỗi event bám sát một mục tiêu tương ứng.\n"
+            "- Mỗi event phải mô tả nhiệm vụ, hành động bắt buộc và tiêu chí thành công rõ ràng.\n"
+            "- Trường on_success dùng ID sự kiện tiếp theo hoặc null nếu kết thúc.\n"
+            "- Trường on_fail bắt buộc dùng ID retry theo mẫu <ID>_RETRY (ví dụ CE2_RETRY).\n"
+            "- Trường timeout_turn là số lượt hội thoại tối đa trước khi event xem như thất bại (số nguyên >= 1).\n"
+            "- Trường preconditions là danh sách ID sự kiện cần hoàn thành trước (có thể rỗng).\n"
+            "- Trong mỗi canon event, trường npc_appearance là danh sách personas xuất hiện (persona_id khớp dữ liệu đầu vào, kèm role).\n"
+            "- Không cần đảm bảo tất cả personas đều xuất hiện trong mỗi npc_appearance.\n"
+            "- Không thêm trường ngoài schema quy định.\n",
         ),
     ]
 ).partial(format_instructions=_parser.get_format_instructions())

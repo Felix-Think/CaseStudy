@@ -70,5 +70,4 @@ def generate_canon_node(state: SkeletonState) -> SkeletonState:
     return {
         **state,
         "canon_events": plan.get("canon_events", []),
-        "telemetry": plan.get("telemetry", {}),
     }

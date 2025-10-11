@@ -1,0 +1,134 @@
+{
+  "language": "vi-VN",
+  "case_id": "drowning_pool_001",
+  "topic": "Sơ cứu đuối nước tại hồ bơi",
+  "learning_objectives": [
+    {
+      "id": "LO1",
+      "title": "Đánh giá ban đầu & an toàn hiện trường",
+      "description": "Thực hiện kiểm tra an toàn bản thân/hiện trường, tiếp cận nạn nhân đúng quy trình và đánh giá nhanh mức đáp ứng, hô hấp, tuần hoàn.",
+      "success_criteria": [
+        "Xác định rủi ro khu vực nước/trơn trượt và kiểm soát đám đông",
+        "Tiếp cận đúng kỹ thuật, giới thiệu vai trò và xin hỗ trợ",
+        "Nêu rõ tình trạng ban đầu (đáp ứng, thở, mạch) bằng thuật ngữ đơn giản"
+      ]
+    },
+    {
+      "id": "LO2",
+      "title": "Kích hoạt cấp cứu & phân công",
+      "description": "Kích hoạt 115/EMS đúng lúc, phân công nhân chứng hỗ trợ (gọi cấp cứu, mang AED/túi sơ cứu, điều phối đám đông).",
+      "success_criteria": [
+        "Chỉ định đích danh người gọi 115 và nhắc lặp lại",
+        "Yêu cầu mang AED/túi sơ cứu đến vị trí",
+        "Báo tọa độ/địa chỉ và mô tả nạn nhân ngắn gọn"
+      ]
+    },
+    {
+      "id": "LO3",
+      "title": "Sơ cứu theo phác đồ tại chỗ",
+      "description": "Thực hiện các can thiệp sơ cứu phù hợp với phác đồ địa phương dành cho nạn nhân đuối nước (ưu tiên đường thở–thở–tuần hoàn, hâm ấm thụ động, theo dõi liên tục cho tới khi bàn giao).",
+      "success_criteria": [
+        "Quyết định can thiệp dựa trên tình trạng thở/tuần hoàn quan sát được",
+        "Hướng dẫn người hỗ trợ đúng và an toàn",
+        "Theo dõi, đánh giá lại và chuẩn bị bàn giao cho EMS"
+      ]
+    },
+    {
+      "id": "LO4",
+      "title": "Giao tiếp & trấn an thân nhân",
+      "description": "Truyền đạt rõ ràng, trấn an người nhà trong khi vẫn duy trì ưu tiên an toàn và can thiệp cho nạn nhân.",
+      "success_criteria": [
+        "Giải thích ngắn gọn, dễ hiểu cho thân nhân",
+        "Hướng dẫn đứng vị trí an toàn, tránh cản trở",
+        "Xử lý câu hỏi/căng thẳng mà không gián đoạn chăm sóc"
+      ]
+    }
+  ],
+  "initial_context": {
+    "scene": {
+      "time": "16:30",
+      "weather": "Âm u, mặt sàn quanh hồ ẩm ướt, trơn trượt",
+      "location": "Hồ bơi công cộng trong nhà, khu vực bể sâu 2,2m, đông người cuối tuần",
+      "noise_level": "Ồn, nhiều người la hét, tiếng nước; có loa nội bộ"
+    },
+    "index_event": {
+      "summary": "Một bé trai vừa được kéo lên bờ sau khi chìm; ho sặc sụa, lúc tỉnh lúc lịm.",
+      "current_state": "Thở yếu, ho khan/khạc nước; chưa thấy chấn thương đầu/cột sống rõ ràng",
+"who_first_on_scene": "Bạn ở gần nhất và là người đầu tiên tiếp cận"
+    },
+    "available_resources": {
+      "rescue": ["Phao tròn", "Sào cứu hộ", "Khăn/áo choàng"],
+      "medical": ["Túi sơ cứu cơ bản", "AED ở quầy lễ tân cách ~50m"],
+      "human": ["Bảo vệ cơ sở", "2–3 người bơi gần đó sẵn sàng hỗ trợ"]
+    },
+    "constraints": [
+      "Sàn ướt và trơn, nguy cơ ngã",
+      "Đám đông tụ tập gây cản trở",
+      "Nhân viên cứu hộ vừa rời vị trí, chưa có mặt",
+      "Máy quay an ninh theo dõi (cần tuân thủ quy định cơ sở)"
+    ],
+    "policies_safety_legal": [
+      "Ưu tiên an toàn người hỗ trợ và hiện trường trước",
+      "Không đưa ra chẩn đoán y khoa; chỉ thực hiện/điều phối sơ cứu trong phạm vi đào tạo",
+      "Tuân thủ phác đồ địa phương hiện hành; chờ và bàn giao cho EMS",
+      "Tôn trọng quyền riêng tư nạn nhân; tránh ghi hình/tiết lộ thông tin không cần thiết"
+    ],
+    "handover_target": "Bàn giao cho 115/EMS ngay khi họ đến",
+    "success_end_state": "Nạn nhân được duy trì thông khí/tuần hoàn tốt nhất có thể, ấm và ổn định tới lúc bàn giao; thân nhân được trấn an"
+  },
+  "personas": [
+    {
+      "id": "P1",
+      "role": "Nạn nhân",
+      "name": "Bé Nam",
+      "age": 11,
+      "state": "Ướt lạnh, ho sặc sụa, lúc tỉnh lúc lịm; thở yếu",
+      "goals": ["Được giúp thở dễ hơn", "Được ủ ấm"],
+      "notes_for_dialogue": [
+        "Có thể chỉ rên rỉ/khó thở, ít giao tiếp",
+        "Phản ứng yếu khi gọi"
+      ]
+    },
+    {
+      "id": "P2",
+      "role": "Thân nhân",
+      "name": "Mẹ Lan",
+      "age": 32,
+      "traits": ["Hoảng loạn", "Bám sát con, dễ chen vào khu vực can thiệp"],
+      "goals": ["Muốn biết con có ổn không", "Muốn đứng gần con"],
+      "likely_lines": [
+        "“Cứu con tôi với!”",
+        "“Nó có thở không? Tôi phải làm gì?”"
+      ],
+      "de_escalation_tips": [
+        "Giao nhiệm vụ cụ thể (gọi 115, lấy khăn, giữ khoảng trống)",
+        "Trấn an bằng câu ngắn, dứt khoát"
+      ]
+    },
+    {
+      "id": "P3",
+      "role": "Nhân viên cơ sở",
+      "name": "Bảo vệ Quang",
+      "age": 40,
+      "traits": ["Quyết đoán", "Có quyền điều phối đám đông"],
+      "goals": ["Giữ lối thoáng", "Hỗ trợ mang AED"],
+      "likely_support_actions": [
+        "Giải tán đám đông, chặn lối đi",
+        "Chạy lấy AED/túi sơ cứu"
+      ]
+    },
+    {
+      "id": "P4",
+      "role": "Người bơi gần đó",
+      "name": "Anh Huy",
+      "age": 27,
+      "traits": ["Sẵn sàng giúp", "Chờ hướng dẫn"],
+      "goals": ["Làm đúng theo chỉ dẫn"],
+    "likely_support_actions": [
+        "Gọi 115 theo chỉ định đích danh",
+        "Lấy khăn/áo, hỗ trợ ủ ấm",
+        "Đếm thời gian, đọc to tình trạng theo yêu cầu"
+      ]
+    }
+  ]
+}

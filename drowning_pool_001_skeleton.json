@@ -1,0 +1,127 @@
+{
+  "case_id": "drowning_pool_001",
+  "canon_events": [
+    {
+      "id": "CE1_DANH_GIA_AN_TOAN",
+      "title": "Đánh giá ban đầu & an toàn hiện trường",
+      "description": "Thực hiện kiểm tra an toàn bản thân/hiện trường, tiếp cận nạn nhân đúng quy trình và đánh giá nhanh mức đáp ứng, hô hấp, tuần hoàn.",
+      "trigger": "Bé Nam được kéo lên bờ.",
+      "preconditions": [
+        "Nạn nhân đã được cứu lên bờ.",
+        "Khu vực xung quanh ướt và trơn.",
+        "Đám đông tụ tập gần đó."
+      ],
+      "required_actions": [
+        "Kiểm tra an toàn khu vực xung quanh.",
+        "Tiếp cận nạn nhân một cách cẩn thận.",
+        "Đánh giá tình trạng đáp ứng, hô hấp và tuần hoàn của nạn nhân."
+      ],
+      "success_criteria": [
+        "Xác định rủi ro khu vực nước/trơn trượt và kiểm soát đám đông.",
+        "Nêu rõ tình trạng ban đầu (đáp ứng, thở, mạch) bằng thuật ngữ đơn giản."
+      ],
+      "phase_id": "PHASE_1",
+      "timeout_turn": 3,
+      "npc_lines": [
+        "Tôi cần biết tình trạng của bé ngay bây giờ!",
+        "Hãy giữ khoảng cách và để tôi làm việc!"
+      ],
+      "fail_risk": "Rủi ro ngã do sàn trơn.",
+      "on_success": [
+        "CE2_KICH_HOAT_CAP_CUU"
+      ],
+      "on_fail": []
+    },
+    {
+      "id": "CE2_KICH_HOAT_CAP_CUU",
+      "title": "Kích hoạt cấp cứu & phân công",
+      "description": "Kích hoạt 115/EMS đúng lúc, phân công nhân chứng hỗ trợ.",
+      "trigger": "Đánh giá tình trạng nạn nhân cho thấy cần hỗ trợ y tế.",
+      "preconditions": [
+        "Nạn nhân có dấu hiệu khó thở.",
+        "Có người xung quanh sẵn sàng hỗ trợ.",
+        "Nhân viên cứu hộ chưa có mặt."
+      ],
+      "required_actions": [
+        "Gọi 115/EMS ngay lập tức.",
+        "Chỉ định một người gọi cấp cứu.",
+        "Yêu cầu người khác mang AED/túi sơ cứu đến."
+      ],
+      "success_criteria": [
+        "Chỉ định đích danh người gọi 115 và nhắc lặp lại.",
+        "Báo tọa độ/địa chỉ và mô tả nạn nhân ngắn gọn."
+      ],
+      "phase_id": "PHASE_1",
+      "timeout_turn": 3,
+      "npc_lines": [
+        "Ai sẽ gọi cấp cứu? Hãy làm ngay!",
+        "Đừng quên mang AED đến đây!"
+      ],
+      "fail_risk": "Người gọi cấp cứu không rõ ràng.",
+      "on_success": [
+        "CE3_SO_CUU_THEO_PHAC_DO"
+      ],
+      "on_fail": []
+    },
+    {
+      "id": "CE3_SO_CUU_THEO_PHAC_DO",
+      "title": "Sơ cứu theo phác đồ tại chỗ",
+      "description": "Thực hiện các can thiệp sơ cứu phù hợp với phác đồ địa phương dành cho nạn nhân đuối nước.",
+      "trigger": "Nhận được AED và hỗ trợ từ người khác.",
+      "preconditions": [
+        "Nạn nhân vẫn còn ho sặc sụa.",
+        "Có AED và túi sơ cứu sẵn sàng.",
+        "Người hỗ trợ đã được chỉ định."
+      ],
+      "required_actions": [
+        "Thực hiện hô hấp nhân tạo nếu cần.",
+        "Hướng dẫn người hỗ trợ cách sử dụng AED.",
+        "Theo dõi tình trạng nạn nhân liên tục."
+      ],
+      "success_criteria": [
+        "Quyết định can thiệp dựa trên tình trạng thở/tuần hoàn quan sát được.",
+        "Theo dõi, đánh giá lại và chuẩn bị bàn giao cho EMS."
+      ],
+      "phase_id": "PHASE_2",
+      "timeout_turn": 4,
+      "npc_lines": [
+        "Hãy làm theo hướng dẫn của tôi!",
+        "AED đã sẵn sàng, chúng ta cần sử dụng ngay!"
+      ],
+      "fail_risk": "Không thực hiện đúng quy trình sơ cứu.",
+      "on_success": [
+        "CE4_GIAO_TIEP_TRAN_AN_THAN_NHAN"
+      ],
+      "on_fail": []
+    },
+    {
+      "id": "CE4_GIAO_TIEP_TRAN_AN_THAN_NHAN",
+      "title": "Giao tiếp & trấn an thân nhân",
+      "description": "Truyền đạt rõ ràng, trấn an người nhà trong khi vẫn duy trì ưu tiên an toàn và can thiệp cho nạn nhân.",
+      "trigger": "Mẹ Lan hoảng loạn và cần thông tin.",
+      "preconditions": [
+        "Mẹ Lan đang đứng gần khu vực can thiệp.",
+        "Nạn nhân đang được sơ cứu.",
+        "Đám đông vẫn còn tụ tập."
+      ],
+      "required_actions": [
+        "Giải thích tình trạng của bé Nam cho mẹ Lan.",
+        "Hướng dẫn mẹ Lan đứng ở vị trí an toàn.",
+        "Xử lý câu hỏi/căng thẳng mà không gián đoạn chăm sóc."
+      ],
+      "success_criteria": [
+        "Giải thích ngắn gọn, dễ hiểu cho thân nhân.",
+        "Hướng dẫn đứng vị trí an toàn, tránh cản trở."
+      ],
+      "phase_id": "PHASE_2",
+      "timeout_turn": 3,
+      "npc_lines": [
+        "Tôi cần biết con tôi có ổn không!",
+        "Xin hãy cho tôi biết điều gì đang xảy ra!"
+      ],
+      "fail_risk": "Mẹ Lan có thể gây cản trở cho quá trình sơ cứu.",
+      "on_success": [],
+      "on_fail": []
+    }
+  ]
+}

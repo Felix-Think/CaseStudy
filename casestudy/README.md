@@ -158,3 +158,14 @@
 | **Skeleton JSON**    | Tĩnh, cấu trúc logic  | Key lookup (`id`)      | Không thay đổi    | Điều khiển flow            |
 | **VectorDB Indexes** | Ngữ nghĩa, dài, mô tả | Semantic search        | Ít thay đổi       | Cung cấp tri thức          |
 | **LangGraph State**  | Động, phiên tạm       | Direct (Python object) | Cập nhật liên tục | Giữ tiến trình & hành động |
+
+# 🔧 HƯỚNG TRIỂN KHAI CỤ THỂ – SEMANTIC MEMORY (CHROMA + LLAMAINDEX)
+
+```markdown
+| Giai đoạn | Mục tiêu chính | Hành động cụ thể |
+|------------|----------------|------------------|
+| **🥇 Giai đoạn 1 – Hiện tại (Baseline)** | Duy trì `persona_index` (Chroma) cho **retrieval nhanh & chính xác** | - Giữ code hiện tại sử dụng `Chroma` cho `scene_index` và `persona_index`.<br>- Mỗi nhân vật được lưu dưới dạng `Document` có metadata: `{id, role, traits, emotion_tags}`.<br>- Query bằng `similarity_search()` để tìm persona phù hợp với ngữ cảnh. |
+| **🥈 Giai đoạn 2 – Mở rộng (Graph Persona)** | Thêm lớp `PersonaGraph` trong **LlamaIndex** để biểu diễn mối quan hệ & trạng thái nhân vật | - Tạo Graph Store (SimpleGraphStore / Neo4jGraphStore).<br>- Sync dữ liệu từ `persona_index` sang LlamaIndex (tạo Node cho mỗi nhân vật).<br>- Thiết lập các quan hệ: `KNOWS`, `CAN_CALM`, `TRUSTS`, `CONFLICTS_WITH`, v.v. |
+| **🥉 Giai đoạn 3 – Reasoning đa nhân vật** | Sử dụng **LlamaIndex Query Engine** để lý luận qua nhiều nhân vật | - Query ví dụ: “Ai có thể trấn an mẹ Lan?” hoặc “Nhân vật nào tin tưởng người học nhất?”.<br>- Engine sẽ trả về danh sách persona phù hợp dựa trên graph embedding + context logic.<br>- Node `RetrievePersonaNode` sẽ gọi `query_engine.query()` thay vì `similarity_search()`. |
+| **🏆 Giai đoạn 4 – Đồng bộ Runtime State (LangGraph)** | Kết hợp **LlamaIndex reasoning** với **LangGraph state update** | - Cập nhật `state.active_personas` theo kết quả từ LlamaIndex.<br>- Ghi cảm xúc, trust, memory của từng persona vào `GraphState`.<br>- Cho phép nhân vật thay đổi cảm xúc và mối quan hệ theo thời gian thực. |
+'''

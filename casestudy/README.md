@@ -16,19 +16,19 @@
          │                             │                             │
          ▼                             ▼                             ▼
  ┌────────────────────────────────────────────────────────────────────────────┐
- │                     🧱 TẦNG 1 – LOGIC MEMORY (STRUCTURED)                   │
+ │                     🧱 TẦNG 1 – LOGIC MEMORY (STRUCTURED)                  │
  │ - Lưu: JSON / GraphStore                                                   │
  │ - Quản lý chuỗi Canon Events, các phase, preconditions, on_success / fail  │
- │ - Không embedding, truy xuất ID xác định                                  │
- │ - Dùng điều hướng flow LangGraph                                          │
+ │ - Không embedding, truy xuất ID xác định                                   │
+ │ - Dùng điều hướng flow LangGraph                                           │
  └────────────────────────────────────────────────────────────────────────────┘
          │
          ▼
  ┌────────────────────────────────────────────────────────────────────────────┐
  │                 🌐 TẦNG 2 – SEMANTIC MEMORY (NGỮ NGHĨA)                    │
- │ - Lưu: VectorDB (FAISS / Chroma / Milvus)                                 │
+ │ - Lưu: VectorDB (FAISS / Chroma / Milvus)                                  │
  │ - Gồm: Scene, Persona, Resource, Constraint, Policy…                       │
- │ - Cho phép truy vấn ngữ nghĩa (semantic search)                           │
+ │ - Cho phép truy vấn ngữ nghĩa (semantic search)                            │
  │                                                                            │
  │  + scene_index       → Mô tả môi trường, thời tiết, nguồn lực              │
  │  + persona_index     → Nhân vật, tính cách, lời thoại                      │
@@ -54,8 +54,8 @@
  ┌────────────────────────────────────────────────────────────────────────────┐
  │                          🤖 LLM REASONER                                   │
  │ - Nhận: Logic (skeleton) + Semantic (VectorDB) + State hiện tại            │
- │ - Sinh: Scene narration, lời thoại, đánh giá hành động                    │
- │ - Xuất: Output ngắn (≤400 tokens) → cập nhật lại Runtime State            │
+ │ - Sinh: Scene narration, lời thoại, đánh giá hành động                     │
+ │ - Xuất: Output ngắn (≤400 tokens) → cập nhật lại Runtime State             │
  └────────────────────────────────────────────────────────────────────────────┘
 
 
@@ -68,28 +68,28 @@
                 │
                 ▼
       ┌─────────────────────────────────────────────┐
-      │ 1️⃣ LOAD CASE DATA                          │
+      │ 1️⃣ LOAD CASE DATA                           │
       │ - Load skeleton.json (logic)                │
       │ - Load scene_index, persona_index (semantic)│
       └─────────────────────────────────────────────┘
                 │
                 ▼
       ┌─────────────────────────────────────────────┐
-      │ 2️⃣ RETRIEVE CONTEXT                        │
+      │ 2️⃣ RETRIEVE CONTEXT                         │
       │ - Query scene_index để lấy bối cảnh         │
       │ - Query persona_index để chọn nhân vật      │
       └─────────────────────────────────────────────┘
                 │
                 ▼
       ┌─────────────────────────────────────────────┐
-      │ 3️⃣ GENERATE SCENE CONTEXT                  │
+      │ 3️⃣ GENERATE SCENE CONTEXT                   │
       │ - LLM condense từ retrieved docs            │
       │ - Lưu scene_summary                         │
       └─────────────────────────────────────────────┘
                 │
                 ▼
       ┌─────────────────────────────────────────────┐
-      │ 4️⃣ SIMULATE DIALOGUE                       │
+      │ 4️⃣ SIMULATE DIALOGUE                        │
       │ - Nhận input học viên                       │
       │ - LLM tạo hội thoại (User ↔ Personas)       │
       │ - Update cảm xúc nhân vật                   │
@@ -97,23 +97,23 @@
                 │
                 ▼
       ┌─────────────────────────────────────────────┐
-      │ 5️⃣ EVALUATE PHASE                          │
+      │ 5️⃣ EVALUATE PHASE                           │
       │ - So sánh user_action với required_actions  │
       │ - Dựa trên success_criteria để đánh giá     │
       └─────────────────────────────────────────────┘
                 │
                 ▼
       ┌─────────────────────────────────────────────┐
-      │ 6️⃣ TRANSITION                              │
+      │ 6️⃣ TRANSITION                               │
       │ - Lấy on_success / on_fail từ skeleton      │
       │ - Cập nhật current_event & phase            │
       └─────────────────────────────────────────────┘
                 │
                 ▼
       ┌─────────────────────────────────────────────┐
-      │ 7️⃣ UPDATE STATE                            │
+      │ 7️⃣ UPDATE STATE                             │
       │ - Lưu phase_summary, dialogue_history       │
-      │ - Chuẩn bị vòng lặp mới                    │
+      │ - Chuẩn bị vòng lặp mới                     │
       └─────────────────────────────────────────────┘
 
 ───────────────────────────────────────────────────────────────────────────────

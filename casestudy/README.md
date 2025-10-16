@@ -159,9 +159,8 @@
 | **VectorDB Indexes** | Ngữ nghĩa, dài, mô tả | Semantic search        | Ít thay đổi       | Cung cấp tri thức          |
 | **LangGraph State**  | Động, phiên tạm       | Direct (Python object) | Cập nhật liên tục | Giữ tiến trình & hành động |
 
-
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # 🔧 HƯỚNG TRIỂN KHAI CỤ THỂ – SEMANTIC MEMORY (CHROMA + LLAMAINDEX)
-
 | Giai đoạn | Mục tiêu chính | Hành động cụ thể |
 |------------|----------------|------------------|
 | **🥇 Giai đoạn 1 – Hiện tại (Baseline)** | Duy trì `persona_index` (Chroma) cho **retrieval nhanh & chính xác** | - Giữ code hiện tại sử dụng `Chroma` cho `scene_index` và `persona_index`.<br>- Mỗi nhân vật được lưu dưới dạng `Document` có metadata: `{id, role, traits, emotion_tags}`.<br>- Query bằng `similarity_search()` để tìm persona phù hợp với ngữ cảnh. |

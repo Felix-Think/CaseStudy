@@ -1,4 +1,5 @@
 # 🧠 KIẾN TRÚC 3 TẦNG TRÍ NHỚ CỦA CASESTUDY ENGINE
+'''text
 
                         ┌──────────────────────────────┐
                         │        INPUT (JSON)          │
@@ -16,7 +17,7 @@
          │                             │                             │
          ▼                             ▼                             ▼
  ┌────────────────────────────────────────────────────────────────────────────┐
- │                     🧱 TẦNG 1 – LOGIC MEMORY (STRUCTURED)                  │
+ │                     🧱 TẦNG 1 – LOGIC MEMORY (STRUCTURED)                 │
  │ - Lưu: JSON / GraphStore                                                   │
  │ - Quản lý chuỗi Canon Events, các phase, preconditions, on_success / fail  │
  │ - Không embedding, truy xuất ID xác định                                   │
@@ -117,6 +118,7 @@
       └─────────────────────────────────────────────┘
 
 ───────────────────────────────────────────────────────────────────────────────
+'''
 
 # 🧭 TƯ DUY KIẾN TRÚC
 

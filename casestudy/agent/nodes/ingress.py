@@ -8,7 +8,7 @@ from ..state import RuntimeState
 from typing import Any
 
 def build_ingress_node(
-    state_store: RuntimeStateStore,
+    _state_store: RuntimeStateStore,
     logic_memory: LogicMemory,
     *,
     default_event: str,
@@ -23,21 +23,27 @@ def build_ingress_node(
 
     def ingress(state: RuntimeState, config: RunnableConfig = None) -> RuntimeState:
         cfg = dict(config or {})
-        incoming_action = state.user_action
 
-        if not cfg.get("reset_state"):
-            stored_state = state_store.load()
-            if stored_state:
-                _apply_event_limits(stored_state, stored_state.current_event)
-                if incoming_action:
-                    stored_state.user_action = incoming_action
-                return stored_state
+        explicit_start = cfg.get("start_event")
+        should_reset = cfg.get("reset_state", False)
 
-        start_event = cfg.get("start_event") or default_event
-        state.current_event = start_event
-        state.turn_count = 0
+        if should_reset:
+            target_event = explicit_start or default_event
+            state.current_event = target_event
+            state.turn_count = 0
+            state.dialogue_history.clear()
+            state.event_summary.clear()
+        elif explicit_start:
+            state.current_event = explicit_start
+            state.turn_count = 0
+            state.dialogue_history.clear()
+
+        if not state.current_event:
+            state.current_event = default_event
+
         state.system_notice = None
-        _apply_event_limits(state, start_event)
+        state.event_summary["_last_persona_dialogue"] = []
+        _apply_event_limits(state, state.current_event)
         return state
 
     return ingress

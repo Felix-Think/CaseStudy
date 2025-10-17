@@ -65,6 +65,15 @@ def render_state(state: RuntimeState) -> None:
         print("\n[Scene Summary]")
         print(state.scene_summary)
 
+    persona_dialogue = state.event_summary.get("_last_persona_dialogue") or []
+    if persona_dialogue:
+        print("\n[Persona Dialogue]")
+        for line in persona_dialogue:
+            speaker = line.get("speaker", "NPC")
+            content = line.get("content", "").strip()
+            if content:
+                print(f"- {speaker}: {content}")
+
     if state.ai_reply:
         print("\n[AI Facilitator]")
         print(state.ai_reply)

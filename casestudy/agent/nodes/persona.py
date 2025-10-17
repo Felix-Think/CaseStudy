@@ -9,15 +9,6 @@ from ..memory import LogicMemory
 from ..state import PersonaState, RuntimeState
 
 
-def _append(history: List[Dict[str, str]], speaker: str, content: str) -> None:
-    if not speaker or not content:
-        return
-    entry = {"speaker": speaker, "content": content}
-    if history and history[-1] == entry:
-        return
-    history.append(entry)
-
-
 def _format_recent_history(history: Iterable[Dict[str, str]], limit: int = 5) -> str:
     window = list(history)[-limit:]
     if not window:
@@ -123,12 +114,8 @@ def build_persona_dialogue_node(
 
         persona_lines = _parse_persona_dialogue(raw_output)
         if not persona_lines:
+            state.event_summary["_last_persona_dialogue"] = []
             return state
-
-        for line in persona_lines:
-            speaker = line.get("speaker") or "NPC"
-            content = line.get("content")
-            _append(state.dialogue_history, speaker, content)
 
         state.event_summary["_last_persona_dialogue"] = persona_lines
         return state

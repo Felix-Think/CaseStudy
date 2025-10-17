@@ -20,7 +20,15 @@ def build_state_update_node(*, policy_penalty: float = 0.1) -> Any:
 
     def update(state: RuntimeState, _: RunnableConfig = None) -> RuntimeState:
         _append(state.dialogue_history, "user", state.user_action)
-        _append(state.dialogue_history, "ai", state.ai_reply)
+
+        persona_dialogue = state.event_summary.get("_last_persona_dialogue") or []
+        if isinstance(persona_dialogue, list):
+            for line in persona_dialogue:
+                if not isinstance(line, dict):
+                    continue
+                speaker = line.get("speaker") or "NPC"
+                content = line.get("content")
+                _append(state.dialogue_history, speaker, content)
 
         num_flags = len(state.policy_flags or [])
         if num_flags:

@@ -3,7 +3,7 @@ from __future__ import annotations
 from langchain_core.runnables import RunnableConfig
 
 from ..state import RuntimeState
-
+from typing import Any
 
 def _append(history, speaker, content):
     if not content:

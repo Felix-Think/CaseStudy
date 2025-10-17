@@ -4,7 +4,7 @@ from langchain_core.runnables import RunnableConfig
 
 from ..runtime_store import RuntimeStateStore
 from ..state import RuntimeState
-
+from typing import Any
 
 def build_ingress_node(
     state_store: RuntimeStateStore,

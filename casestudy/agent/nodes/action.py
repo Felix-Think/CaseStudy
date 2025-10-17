@@ -3,7 +3,7 @@ from __future__ import annotations
 from langchain_core.runnables import RunnableConfig
 from ..memory import LogicMemory
 from ..state import RuntimeState
-
+from typing import Any
 
 def build_action_node(
     logic_memory: LogicMemory,

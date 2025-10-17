@@ -1,0 +1,147 @@
+{
+  "case_id": "drowning_pool_001",
+  "current_event": "CE1_RETRY",
+  "turn_count": 4,
+  "max_turns": 0,
+  "scene_summary": "Bối cảnh của case study y khoa này diễn ra tại một hồ bơi công cộng trong nhà vào lúc 16:30, khi có đông người tham gia. Một bé trai vừa được kéo lên bờ sau khi chìm, đang trong tình trạng thở yếu và ho khan. Môi trường xung quanh có sàn ướt và trơn, gây nguy cơ ngã cho người cứu hộ, cùng với sự cản trở từ đám đông tụ tập. Học viên đã thực hiện hành động sơ tán mọi người để tạo không gian cho bệnh nhân hô hấp, giúp giảm thiểu rủi ro và tạo điều kiện thuận lợi hơn cho việc cứu chữa. Các nguồn lực hiện có bao gồm phao tròn, sào cứu hộ, khăn/áo choàng, túi sơ cứu cơ bản và AED cách đó khoảng 50m, cùng với sự hỗ trợ từ bảo vệ cơ sở và một vài người bơi gần đó. Hiện tại, học viên đang tiến hành kiểm tra tình trạng bệnh nhân và thực hiện CPR.",
+  "active_personas": {
+    "P1": {
+      "id": "P1",
+      "name": "Nạn nhân",
+      "role": "Người bị đuối nước",
+      "emotion": "lo lắng",
+      "trust": 0.0,
+      "profile": "Người bơi nghiệp dư 25 tuổi có dấu hiệu hoảng loạn trước khi chìm, mục tiêu chính là được cứu sống và ổn định hô hấp cũng như tuần hoàn. Cảm xúc: hoảng loạn, mệt mỏi, hôn mê."
+    },
+    "P3": {
+      "id": "P3",
+      "name": "Nhân viên cơ sở",
+      "role": "Nhân viên cứu hộ hoặc quản lý hồ bơi",
+      "emotion": "lo lắng",
+      "trust": 0.0,
+      "profile": null
+    },
+    "P4": {
+      "id": "P4",
+      "name": "Người bơi gần đó",
+      "role": "Nhân chứng / người hỗ trợ phụ",
+      "emotion": "lo lắng",
+      "trust": 0.0,
+      "profile": null
+    }
+  },
+  "dialogue_history": [
+    {
+      "speaker": "ai",
+      "content": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang thở yếu và ho khan, trong khi môi trường xung quanh ướt và trơn, có nguy cơ gây ngã cho những người có mặt.  \n2. Học viên chưa thực hiện hành động nào, cần nhanh chóng bắt đầu đánh giá và xử lý tình huống.  \n3. Bước tiếp theo là kiểm tra an toàn khu vực xung quanh hồ bơi, sau đó tiếp cận nạn nhân một cách cẩn thận và đánh giá tình trạng đáp ứng, thở, mạch của nạn nhân.  \n4. Nhắc nhở học viên luôn chú ý đến an toàn của bản thân và những người xung quanh khi tiếp cận nạn nhân trong môi trường ướt trơn."
+    },
+    {
+      "speaker": "ai",
+      "content": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang thở yếu và ho khan, trong khi môi trường xung quanh ướt và trơn, có nguy cơ ngã cao.  \n2. Học viên chưa thực hiện hành động nào, cần nhanh chóng bắt đầu xử lý tình huống.  \n3. Bước tiếp theo là kiểm tra an toàn khu vực xung quanh hồ bơi, sau đó tiếp cận nạn nhân một cách cẩn thận và đánh giá tình trạng đáp ứng, thở, mạch của nạn nhân.  \n4. Nhắc nhở học viên luôn chú ý đến an toàn của bản thân và những người xung quanh khi tiếp cận nạn nhân trong môi trường ướt trơn."
+    },
+    {
+      "speaker": "user",
+      "content": "Kiểm tra môi trường xung quanh nạn nhân, kêu mọi người tránh ra để lấy không khí cho nạn nhân."
+    },
+    {
+      "speaker": "ai",
+      "content": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang thở yếu và ho khan, trong khi môi trường xung quanh đông đúc và ướt trơn, cần xử lý nhanh chóng.  \n2. Hành động của học viên trong việc kiểm tra môi trường xung quanh và kêu gọi mọi người tránh ra là hợp lý, giúp tạo không gian cho nạn nhân.  \n3. Bước tiếp theo là tiếp cận nạn nhân một cách cẩn thận, đánh giá tình trạng đáp ứng, thở và mạch của nạn nhân.  \n4. Nhắc nhở học viên luôn chú ý đến an toàn của bản thân và những người xung quanh, đồng thời tôn trọng quyền riêng tư của nạn nhân trong quá trình xử lý tình huống."
+    },
+    {
+      "speaker": "ai",
+      "content": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang thở yếu và ho khan, cần xử lý nhanh chóng trong môi trường đông đúc và ướt trơn.  \n2. Hành động của học viên trong việc kiểm tra môi trường và kêu gọi mọi người tránh ra là hợp lý, giúp tạo không gian cho nạn nhân.  \n3. Bước tiếp theo là tiếp cận nạn nhân một cách cẩn thận, đánh giá tình trạng đáp ứng, thở và mạch của nạn nhân.  \n4. Nhắc nhở học viên luôn chú ý đến an toàn của bản thân và những người xung quanh, đồng thời tôn trọng quyền riêng tư của nạn nhân trong quá trình xử lý tình huống."
+    },
+    {
+      "speaker": "user",
+      "content": "Kiểm tra môi trường xung quanh nạn nhân, sơ tán mọi người để lấy không gian cho bệnh nhân hô hấp"
+    },
+    {
+      "speaker": "ai",
+      "content": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang thở yếu và ho khan, cần xử lý nhanh chóng trong môi trường đông đúc và ướt trơn.  \n2. Hành động của học viên trong việc kiểm tra môi trường và sơ tán mọi người là hợp lý, giúp tạo không gian cho nạn nhân.  \n3. Bước tiếp theo là tiếp cận nạn nhân một cách cẩn thận và thực hiện đánh giá tình trạng đáp ứng, thở và mạch của nạn nhân.  \n4. Nhắc nhở học viên luôn chú ý đến an toàn của bản thân và những người xung quanh, đồng thời tôn trọng quyền riêng tư của nạn nhân trong quá trình xử lý tình huống."
+    },
+    {
+      "speaker": "user",
+      "content": "Kiểm tra tình trạng bệnh nhân,tiến hành CPR"
+    },
+    {
+      "speaker": "ai",
+      "content": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang thở yếu và ho khan, cần xử lý nhanh chóng trong môi trường đông đúc và ướt trơn.  \n2. Hành động của học viên trong việc kiểm tra tình trạng bệnh nhân và tiến hành CPR là hợp lý, giúp duy trì sự sống cho nạn nhân.  \n3. Bước tiếp theo là tiếp tục thực hiện CPR cho đến khi có sự hỗ trợ từ EMS hoặc nạn nhân có dấu hiệu hồi phục.  \n4. Nhắc nhở học viên luôn chú ý đến an toàn của bản thân và những người xung quanh, đồng thời tuân thủ các quy định về quyền riêng tư của nạn nhân."
+    },
+    {
+      "speaker": "Nạn nhân",
+      "content": "Tôi cảm thấy khó thở... hãy giúp tôi!"
+    },
+    {
+      "speaker": "Nhân viên cơ sở",
+      "content": "Tôi sẽ gọi hỗ trợ ngay lập tức! Hãy giữ bình tĩnh!"
+    },
+    {
+      "speaker": "Người bơi gần đó",
+      "content": "Tôi có thể giúp gì không? Có cần tôi gọi ai không?"
+    },
+    {
+      "speaker": "user",
+      "content": "Đi ngủ không cứu nữa"
+    },
+    {
+      "speaker": "ai",
+      "content": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang cảm thấy khó thở, cần sự hỗ trợ ngay lập tức.  \n2. Hành động của học viên trong việc tiến hành CPR là đúng đắn, nhưng việc \"đi ngủ không cứu nữa\" là không thể chấp nhận trong tình huống khẩn cấp này.  \n3. Bước tiếp theo là tiếp tục thực hiện CPR cho nạn nhân và yêu cầu người bơi gần đó gọi hỗ trợ y tế khẩn cấp (EMS).  \n4. Nhắc nhở học viên luôn ưu tiên an toàn cho bản thân và những người xung quanh, đồng thời tuân thủ các quy định về sơ cứu và không bỏ cuộc trong tình huống khẩn cấp."
+    }
+  ],
+  "user_action": null,
+  "event_summary": {
+    "CE1": "fail",
+    "CE1_matched": [],
+    "CE1_scores": [
+      [
+        "Kiểm tra an toàn khu vực xung quanh hồ bơi.",
+        0.2222222222222222
+      ],
+      [
+        "Tiếp cận nạn nhân đúng kỹ thuật.",
+        0.14285714285714285
+      ],
+      [
+        "Đánh giá tình trạng đáp ứng, thở, mạch của nạn nhân.",
+        0.3333333333333333
+      ]
+    ],
+    "_last_scene_event": "CE1",
+    "CE1_RETRY": "pending",
+    "CE1_RETRY_matched": [],
+    "CE1_RETRY_scores": [],
+    "_last_persona_dialogue": [
+      {
+        "persona_id": "P1",
+        "speaker": "Nạn nhân",
+        "content": "Tôi cảm thấy khó thở... hãy giúp tôi!"
+      },
+      {
+        "persona_id": "P2",
+        "speaker": "Nhân viên cơ sở",
+        "content": "Tôi sẽ gọi hỗ trợ ngay lập tức! Hãy giữ bình tĩnh!"
+      },
+      {
+        "persona_id": "P3",
+        "speaker": "Người bơi gần đó",
+        "content": "Tôi có thể giúp gì không? Có cần tôi gọi ai không?"
+      }
+    ]
+  },
+  "policy_flags": [
+    {
+      "policy_id": "policy_2",
+      "policy_text": "Không đưa ra chẩn đoán y khoa; chỉ thực hiện/điều phối sơ cứu trong phạm vi đào tạo"
+    },
+    {
+      "policy_id": "policy_3",
+      "policy_text": "Tuân thủ phác đồ địa phương hiện hành; chờ và bàn giao cho EMS"
+    },
+    {
+      "policy_id": "policy_1",
+      "policy_text": "Ưu tiên an toàn người hỗ trợ và hiện trường trước"
+    }
+  ],
+  "ai_reply": "1. Tình hình hiện tại rất khẩn cấp với nạn nhân đang cảm thấy khó thở, cần sự hỗ trợ ngay lập tức.  \n2. Hành động của học viên trong việc tiến hành CPR là đúng đắn, nhưng việc \"đi ngủ không cứu nữa\" là không thể chấp nhận trong tình huống khẩn cấp này.  \n3. Bước tiếp theo là tiếp tục thực hiện CPR cho nạn nhân và yêu cầu người bơi gần đó gọi hỗ trợ y tế khẩn cấp (EMS).  \n4. Nhắc nhở học viên luôn ưu tiên an toàn cho bản thân và những người xung quanh, đồng thời tuân thủ các quy định về sơ cứu và không bỏ cuộc trong tình huống khẩn cấp.",
+  "system_notice": null
+}

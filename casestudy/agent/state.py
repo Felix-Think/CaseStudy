@@ -14,6 +14,8 @@ class PersonaState(BaseModel):
 class RuntimeState(BaseModel):
     case_id: str
     current_event: str
+    turn_count: int = 0
+    max_turns: int = 0
     scene_summary: Optional[str] = None
     active_personas: Dict[str, PersonaState] = Field(default_factory=dict) 
     dialogue_history: List[Dict[str, str]] = Field(default_factory=list)
@@ -21,6 +23,7 @@ class RuntimeState(BaseModel):
     event_summary: Dict[str, Any] = Field(default_factory=dict)  # CE1, CE2...: pass/fail
     policy_flags: List[Dict[str, str]] = Field(default_factory=list)
     ai_reply: Optional[str] = None
+    system_notice: Optional[str] = None
 
     def to_serializable(self) -> Dict[str, Any]:
         data = self.model_dump()

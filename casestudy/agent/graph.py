@@ -8,6 +8,7 @@ from .chains import (
     create_action_evaluator_chain,
     create_chat_model,
     create_persona_digest_chain,
+    create_persona_dialogue_chain,
     create_policy_lookup_chain,
     create_responder_chain,
     create_scene_summary_chain,
@@ -18,6 +19,7 @@ from .nodes import (
     build_action_node,
     build_egress_node,
     build_ingress_node,
+    build_persona_dialogue_node,
     build_policy_node,
     build_responder_node,
     build_semantic_node,
@@ -63,6 +65,10 @@ class CaseStudyGraphBuilder:
             self.llm,
             case_id=case_id,
         )
+        self.persona_dialogue_chain = create_persona_dialogue_chain(
+            self.llm,
+            case_id=case_id,
+        )
         self.policy_chain = create_policy_lookup_chain(policy_index)
         self.action_chain = create_action_evaluator_chain()
         self.responder_chain = create_responder_chain(self.llm, case_id=case_id)
@@ -74,13 +80,21 @@ class CaseStudyGraphBuilder:
 
         graph.add_node(
             "ingress",
-            build_ingress_node(self.state_store, default_event=default_event),
+            build_ingress_node(
+                self.state_store,
+                self.logic_memory,
+                default_event=default_event,
+            ),
         )
         graph.add_node(
             "semantic",
             build_semantic_node(
                 self.logic_memory, self.scene_chain, self.persona_chain
             ),
+        )
+        graph.add_node(
+            "persona",
+            build_persona_dialogue_node(self.logic_memory, self.persona_dialogue_chain),
         )
         graph.add_node("policy", build_policy_node(self.policy_chain))
         graph.add_node(
@@ -100,7 +114,8 @@ class CaseStudyGraphBuilder:
 
         graph.set_entry_point("ingress")
         graph.add_edge("ingress", "semantic")
-        graph.add_edge("semantic", "policy")
+        graph.add_edge("semantic", "persona")
+        graph.add_edge("persona", "policy")
         graph.add_edge("policy", "action")
         graph.add_edge("action", "transition")
         graph.add_edge("transition", "responder")

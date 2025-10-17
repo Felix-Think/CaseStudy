@@ -68,3 +68,59 @@ def create_persona_digest_chain(
         return chain.invoke({"case_id": case_id, "documents": formatted_docs})
 
     return build_digest
+
+
+def create_persona_dialogue_chain(
+    llm,
+    *,
+    case_id: str = DEFAULT_CASE_ID,
+) -> Runnable:
+    """
+    Generate short in-character dialogue snippets for active personas.
+    Output must be JSON array with persona_id + utterance fields so downstream
+    nodes can update the conversation history deterministically.
+    """
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                "system",
+                (
+                    "Bạn điều phối lời thoại cho các nhân vật (NPC) trong mô phỏng y khoa. "
+                    "Hãy giữ giọng điệu và hành động phù hợp hồ sơ từng nhân vật, ngắn gọn "
+                    "và tập trung vào tình huống hiện tại. Trả về JSON."
+                ),
+            ),
+            (
+                "human",
+                (
+                    "Case ID: {case_id}\n"
+                    "Canon Event: {event_title}\n"
+                    "Tóm tắt bối cảnh hiện tại: {scene_summary}\n"
+                    "Hành động mới nhất của học viên: {user_action}\n"
+                    "Trạng thái nhân vật:\n{persona_slate}\n"
+                    "Đoạn hội thoại gần nhất:\n{recent_history}\n\n"
+                    "Yêu cầu:\n"
+                    "- Chỉ tạo lời thoại cho những nhân vật phù hợp để phản ứng.\n"
+                    "- Mỗi nhân vật tối đa 1-2 câu, ưu tiên hành vi hợp lý.\n"
+                    "- Nếu không cần phản hồi, trả về mảng rỗng.\n"
+                    "- Phản hồi cuối cùng ở dạng JSON array: "
+                    "[{{\"persona_id\": \"P1\", \"persona_name\": \"Tên\", \"utterance\": \"...\"}}]."
+                ),
+            ),
+        ]
+    )
+    chain = prompt | llm | StrOutputParser()
+
+    def generate(payload: Dict[str, Any]) -> str:
+        return chain.invoke(
+            {
+                "case_id": case_id,
+                "event_title": payload.get("event_title", "Sự kiện"),
+                "scene_summary": payload.get("scene_summary", "Chưa có dữ liệu."),
+                "user_action": payload.get("user_action", "Chưa ghi nhận."),
+                "persona_slate": payload.get("persona_slate", "Không có nhân vật."),
+                "recent_history": payload.get("recent_history", "Chưa có hội thoại."),
+            }
+        )
+
+    return generate

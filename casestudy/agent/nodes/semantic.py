@@ -36,15 +36,24 @@ def build_semantic_node(
         if not event:
             return state
 
+        last_event_with_summary = state.event_summary.get("_last_scene_event")
+        if last_event_with_summary != state.current_event:
+            previous_summary = None
+        else:
+            previous_summary = state.scene_summary
+
         description = event.get("description", "")
         scene_summary = scene_chain(
             {
                 "query": description,
                 "event_title": event.get("title", state.current_event),
                 "event_description": description,
+                "previous_summary": previous_summary or "Chưa có dữ liệu.",
+                "user_action": state.user_action or "Chưa ghi nhận.",
             }
         )
         state.scene_summary = scene_summary
+        state.event_summary["_last_scene_event"] = state.current_event
 
         persona_ids: List[str] = [
             appearance["persona_id"]

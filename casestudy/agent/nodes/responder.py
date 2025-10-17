@@ -29,10 +29,15 @@ def build_responder_node(
                 "dialogue_history": state.dialogue_history,
                 "policy_flags": state.policy_flags,
                 "user_action": state.user_action or "Chưa ghi nhận.",
+                "turn_count": state.turn_count,
+                "max_turns": state.max_turns,
+                "system_notice": state.system_notice,
             }
         )
 
         state.ai_reply = ai_reply
+        if not state.system_notice:
+            state.turn_count = state.turn_count + 1
         return state
 
     return respond

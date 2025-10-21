@@ -70,7 +70,7 @@ class CaseStudyGraphBuilder:
             case_id=case_id,
         )
         self.policy_chain = create_policy_lookup_chain(policy_index)
-        self.action_chain = create_action_evaluator_chain()
+        self.action_chain = create_action_evaluator_chain(llm=self.llm)
         self.responder_chain = create_responder_chain(self.llm, case_id=case_id)
 
     def build(self) -> StateGraph:

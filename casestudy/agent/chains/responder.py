@@ -33,7 +33,9 @@ def create_responder_chain(
                     "Case ID: {case_id}\n"
                     "Canon Event: {event_title}\n"
                     "Tóm tắt bối cảnh: {scene_summary}\n"
-                    "Yêu cầu hành động: {required_actions}\n"
+                    "Tiêu chí còn lại: {success_criteria}\n"
+                    "Tiêu chí đã đạt: {completed_success_criteria}\n"
+                    "Tiêu chí cần chú ý: {partial_success_criteria}\n"
                     "Nhân vật đang hiện diện: {persona_overview}\n"
                     "Lịch sử hội thoại: {dialogue_history}\n"
                     "Vi phạm hoặc lưu ý policy: {policy_flags}\n"
@@ -60,11 +62,26 @@ def create_responder_chain(
             for turn in dialogue_history
         ) or "Chưa có hội thoại."
 
-        required_actions = payload.get("required_actions", [])
-        if isinstance(required_actions, list):
-            required_actions_text = "; ".join(required_actions) or "Không có."
+        success_criteria = payload.get("success_criteria")
+        if success_criteria is None:
+            # Backwards compatibility for older payloads.
+            success_criteria = payload.get("required_actions", [])
+        if isinstance(success_criteria, list):
+            success_criteria_text = "; ".join(success_criteria) or "Không còn."
         else:
-            required_actions_text = required_actions or "Không có."
+            success_criteria_text = success_criteria or "Không còn."
+
+        completed_success = payload.get("completed_success_criteria", [])
+        if isinstance(completed_success, list):
+            completed_text = "; ".join(completed_success) or "Chưa đạt."
+        else:
+            completed_text = completed_success or "Chưa đạt."
+
+        partial_success = payload.get("partial_success_criteria", [])
+        if isinstance(partial_success, list):
+            partial_text = "; ".join(partial_success) or "Không có."
+        else:
+            partial_text = partial_success or "Không có."
 
         policy_flags = payload.get("policy_flags")
         if isinstance(policy_flags, list) and policy_flags:
@@ -88,7 +105,9 @@ def create_responder_chain(
                 "case_id": case_id,
                 "event_title": payload.get("event_title", "Sự kiện"),
                 "scene_summary": payload.get("scene_summary", "Chưa có dữ liệu."),
-                "required_actions": required_actions_text,
+                "success_criteria": success_criteria_text,
+                "completed_success_criteria": completed_text,
+                "partial_success_criteria": partial_text,
                 "persona_overview": payload.get("persona_overview", "Không có."),
                 "dialogue_history": history_text,
                 "policy_flags": policy_text,

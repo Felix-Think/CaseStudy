@@ -1,111 +1,104 @@
 {
   "case_id": "drowning_pool_001",
-  "current_event": "CE1_RETRY",
-  "turn_count": 0,
-  "max_turns": 0,
-  "scene_summary": "Trong bối cảnh hồ bơi công cộng đông đúc vào cuối tuần, một bé trai vừa được kéo lên bờ sau khi bị chìm, đang trong tình trạng thở yếu và ho khan. Mặt sàn quanh hồ ướt và trơn, gây nguy cơ ngã cho những người có mặt, trong khi đám đông tụ tập có thể cản trở việc tiếp cận nạn nhân. Học viên đã thực hiện việc sơ tán người xung quanh, giảm thiểu rủi ro và tạo không gian cho việc cứu trợ. Hiện tại, học viên đang tiếp tục thực hiện CPR và đã kêu gọi nhân viên cơ sở gọi cấp cứu, đồng thời có sẵn các nguồn lực như phao tròn, sào cứu hộ, và túi sơ cứu cơ bản, cùng với sự hỗ trợ từ 2-3 người bơi gần đó.",
+  "current_event": "CE2",
+  "turn_count": 1,
+  "max_turns": 3,
+  "scene_summary": "Trong bối cảnh mô phỏng này, học viên đang ở một bể bơi đông đúc, nơi có nguy cơ cao về sự hỗn loạn và trơn trượt, điều này có thể gây khó khăn cho việc tiếp cận nạn nhân. Học viên đã thực hiện kiểm tra an toàn môi trường và sơ tán đám đông, giúp tạo điều kiện cho nạn nhân hô hấp dễ dàng hơn. Hiện tại, học viên vẫn chưa thực hiện các can thiệp y tế cụ thể và cần tiếp tục đánh giá mức độ đáp ứng, hô hấp và tuần hoàn của nạn nhân. Học viên đã giới thiệu bản thân là bác sĩ cấp cứu và xin hỗ trợ từ những người xung quanh, nhưng tình huống vẫn chưa thay đổi đáng kể.",
   "active_personas": {
     "P1": {
       "id": "P1",
       "name": "Nạn nhân",
       "role": "Người bị đuối nước",
-      "emotion": "lo lắng",
-      "trust": 0.19999999999999996,
-      "profile": "Người bơi nghiệp dư 25 tuổi có dấu hiệu hoảng loạn trước khi chìm, mục tiêu chính là được cứu sống và ổn định hô hấp cũng như tuần hoàn. Cảm xúc: hoảng loạn, mệt mỏi, hôn mê."
+      "emotion": "hoảng loạn",
+      "trust": 0.5,
+      "profile": "Không có thông tin cụ thể về bối cảnh hoặc nghề nghiệp, do đó không thể xác định mục tiêu chính trong mô phỏng. Cảm xúc: Không xác định."
     },
     "P3": {
       "id": "P3",
       "name": "Nhân viên cơ sở",
       "role": "Nhân viên cứu hộ hoặc quản lý hồ bơi",
-      "emotion": "lo lắng",
-      "trust": 0.19999999999999996,
-      "profile": null
+      "emotion": "bình tĩnh",
+      "trust": 0.5,
+      "profile": "Không có thông tin cụ thể về bối cảnh hoặc nghề nghiệp, do đó không thể xác định mục tiêu chính trong mô phỏng. Cảm xúc: Không xác định."
     },
     "P4": {
       "id": "P4",
       "name": "Người bơi gần đó",
       "role": "Nhân chứng / người hỗ trợ phụ",
-      "emotion": "lo lắng",
-      "trust": 0.19999999999999996,
-      "profile": null
+      "emotion": "bất ngờ",
+      "trust": 0.5,
+      "profile": "Không có thông tin cụ thể về bối cảnh hoặc nghề nghiệp, do đó không thể xác định mục tiêu chính trong mô phỏng. Cảm xúc: Không xác định."
     }
   },
   "dialogue_history": [
     {
       "speaker": "user",
-      "content": "Sơ tán người xung quanh bệnh nhân"
+      "content": "Kiểm tra môi trường xung quanh có rủi ro hay trơn trượt không, sơ tán đám đông để nạn nhân có thể dễ hô hấp"
     },
     {
       "speaker": "Nạn nhân",
-      "content": "Cứu tôi với! Tôi không thể thở!"
+      "content": "Tôi không thể thở! Giúp tôi với!"
     },
     {
       "speaker": "Nhân viên cơ sở",
-      "content": "Hãy giữ bình tĩnh, tôi sẽ gọi nhân viên cứu hộ ngay lập tức!"
+      "content": "Hãy giữ bình tĩnh! Tôi sẽ gọi trợ giúp ngay lập tức!"
     },
     {
       "speaker": "Người bơi gần đó",
-      "content": "Tôi sẽ giúp đỡ, có ai đó gọi AED không?"
+      "content": "Có ai không? Chúng ta cần giúp đỡ ngay!"
     },
     {
       "speaker": "user",
-      "content": "Tiến hành CPR và kêu gọi nhân viên cơ sở gọi cấp cứu"
+      "content": "Tiếp cận đúng kỹ thuật, giới thiệu bản thân là bác sĩ cấp cứu, xin hỗ trợ từ người xung quanh"
     },
     {
       "speaker": "Nạn nhân",
-      "content": "Tôi không thể thở! Xin hãy giúp tôi!"
+      "content": "Tôi cảm thấy choáng! Xin hãy giúp tôi thở!"
     },
     {
       "speaker": "Nhân viên cơ sở",
-      "content": "Tôi đã gọi cấp cứu, hãy giữ bình tĩnh và để tôi giúp bạn!"
+      "content": "Tôi đã gọi trợ giúp, hãy giữ bình tĩnh và cố gắng thở đều!"
     },
     {
       "speaker": "Người bơi gần đó",
-      "content": "Tôi sẽ tìm AED ngay bây giờ!"
+      "content": "Tôi sẽ tìm một người khác để giúp đỡ, hãy nhanh lên!"
     },
     {
       "speaker": "user",
-      "content": "tiếp tục CPR và đợi người lấy AED"
+      "content": "Nêu rõ tình trạng ban đầu (đáp ứng, thở, mạch) bằng thuật ngữ đơn giản"
     }
   ],
   "user_action": null,
   "event_summary": {
     "_last_persona_dialogue": [],
+    "CE1_remaining_success_criteria": [],
+    "CE1_completed_success_criteria": [
+      "Xác định rủi ro khu vực nước/trơn trượt và kiểm soát đám đông",
+      "Tiếp cận đúng kỹ thuật, giới thiệu vai trò và xin hỗ trợ",
+      "Nêu rõ tình trạng ban đầu (đáp ứng, thở, mạch) bằng thuật ngữ đơn giản"
+    ],
+    "CE1_partial": [],
     "_last_scene_event": null,
-    "CE1": "fail",
-    "CE1_matched": [],
+    "CE1": "pass",
+    "CE1_matched": [
+      "Nêu rõ tình trạng ban đầu (đáp ứng, thở, mạch) bằng thuật ngữ đơn giản"
+    ],
     "CE1_scores": [
       [
-        "Kiểm tra an toàn khu vực xung quanh hồ bơi.",
-        0.0
-      ],
-      [
-        "Tiếp cận nạn nhân đúng kỹ thuật.",
-        0.14285714285714285
-      ],
-      [
-        "Đánh giá tình trạng đáp ứng, thở, mạch của nạn nhân.",
-        0.0
+        "Nêu rõ tình trạng ban đầu (đáp ứng, thở, mạch) bằng thuật ngữ đơn giản",
+        "satisfied"
       ]
     ],
-    "CE1_last_result": "timeout_fail",
-    "CE1_reason": "timeout",
-    "CE1_RETRY": "pending"
+    "CE2": "pending",
+    "CE2_remaining_success_criteria": [
+      "Chỉ định đích danh người gọi 115 và nhắc lặp lại",
+      "Yêu cầu mang AED/túi sơ cứu đến vị trí",
+      "Báo tọa độ/địa chỉ và mô tả nạn nhân ngắn gọn"
+    ],
+    "CE2_completed_success_criteria": [],
+    "CE2_partial": []
   },
-  "policy_flags": [
-    {
-      "policy_id": "policy_3",
-      "policy_text": "Tuân thủ phác đồ địa phương hiện hành; chờ và bàn giao cho EMS"
-    },
-    {
-      "policy_id": "policy_1",
-      "policy_text": "Ưu tiên an toàn người hỗ trợ và hiện trường trước"
-    },
-    {
-      "policy_id": "policy_2",
-      "policy_text": "Không đưa ra chẩn đoán y khoa; chỉ thực hiện/điều phối sơ cứu trong phạm vi đào tạo"
-    }
-  ],
-  "ai_reply": "1. Tình hình hiện tại là nạn nhân đang trong trạng thái hoảng loạn, thở yếu và cần được hỗ trợ khẩn cấp, trong khi đám đông xung quanh có thể gây cản trở cho việc cứu trợ.  \n2. Học viên đã thực hiện tốt việc sơ tán người xung quanh và tiếp tục CPR, đồng thời kêu gọi nhân viên cơ sở gọi cấp cứu.  \n3. Bước tiếp theo là tiếp tục thực hiện CPR cho đến khi AED được mang đến và sẵn sàng sử dụng.  \n4. Nhắc nhở rằng cần tuân thủ phác đồ địa phương và đảm bảo an toàn cho cả nạn nhân và những người hỗ trợ trong quá trình cứu trợ.",
-  "system_notice": "Bạn đã hết lượt (3) cho sự kiện 'Đánh giá ban đầu & an toàn hiện trường'. Hệ thống chuyển sang nhánh retry 'CE1_RETRY'."
+  "policy_flags": [],
+  "ai_reply": "1. Tình hình hiện tại có vẻ căng thẳng, nạn nhân đang hoảng loạn và cần sự can thiệp y tế khẩn cấp. \n2. Học viên đã giới thiệu bản thân và xin hỗ trợ, nhưng cần chỉ định rõ người gọi 115 và yêu cầu mang AED/túi sơ cứu. \n3. Hãy chỉ định một người cụ thể trong đám đông gọi 115, nhắc họ lặp lại thông tin và mô tả nạn nhân, đồng thời yêu cầu ai đó mang AED/túi sơ cứu đến. \n4. Đảm bảo an toàn cho bản thân và những người xung quanh trong quá trình can thiệp, tránh gây thêm hỗn loạn.",
+  "system_notice": null
 }

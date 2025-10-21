@@ -6,12 +6,6 @@
       "title": "Đánh giá ban đầu & an toàn hiện trường",
       "description": "Thực hiện kiểm tra an toàn bản thân/hiện trường, tiếp cận nạn nhân đúng quy trình và đánh giá nhanh mức đáp ứng, hô hấp, tuần hoàn.",
       "preconditions": [],
-      "required_actions": [
-        "Kiểm tra an toàn khu vực xung quanh",
-        "Tiếp cận nạn nhân theo kỹ thuật an toàn",
-        "Đánh giá mức đáp ứng của nạn nhân",
-        "Kiểm tra tình trạng hô hấp và tuần hoàn"
-      ],
       "success_criteria": [
         "Xác định rủi ro khu vực nước/trơn trượt và kiểm soát đám đông",
         "Tiếp cận đúng kỹ thuật, giới thiệu vai trò và xin hỗ trợ",
@@ -42,17 +36,12 @@
       "preconditions": [
         "CE1"
       ],
-      "required_actions": [
-        "Gọi điện đến số 115 để kích hoạt cấp cứu",
-        "Phân công người gọi cấp cứu và nhắc lặp lại",
-        "Yêu cầu mang AED/túi sơ cứu đến vị trí"
-      ],
       "success_criteria": [
         "Chỉ định đích danh người gọi 115 và nhắc lặp lại",
         "Yêu cầu mang AED/túi sơ cứu đến vị trí",
         "Báo tọa độ/địa chỉ và mô tả nạn nhân ngắn gọn"
       ],
-      "timeout_turn": 2,
+      "timeout_turn": 3,
       "npc_appearance": [
         {
           "persona_id": "P2",
@@ -69,14 +58,9 @@
     {
       "id": "CE3",
       "title": "Sơ cứu theo phác đồ tại chỗ",
-      "description": "Thực hiện các can thiệp sơ cứu phù hợp với phác đồ địa phương dành cho nạn nhân đuối nước.",
+      "description": "Thực hiện các can thiệp sơ cứu phù hợp với phác đồ địa phương dành cho nạn nhân đuối nước (ưu tiên đường thở–thở–tuần hoàn, hâm ấm thụ động, theo dõi liên tục cho tới khi bàn giao).",
       "preconditions": [
         "CE2"
-      ],
-      "required_actions": [
-        "Thực hiện các can thiệp sơ cứu dựa trên tình trạng nạn nhân",
-        "Hướng dẫn người hỗ trợ thực hiện đúng và an toàn",
-        "Theo dõi tình trạng nạn nhân liên tục"
       ],
       "success_criteria": [
         "Quyết định can thiệp dựa trên tình trạng thở/tuần hoàn quan sát được",
@@ -94,7 +78,7 @@
           "role": "Nhân viên cơ sở"
         }
       ],
-      "on_success": null,
+      "on_success": "CE4",
       "on_fail": "CE3_RETRY"
     },
     {
@@ -102,12 +86,7 @@
       "title": "Giao tiếp & trấn an thân nhân",
       "description": "Truyền đạt rõ ràng, trấn an người nhà trong khi vẫn duy trì ưu tiên an toàn và can thiệp cho nạn nhân.",
       "preconditions": [
-        "CE1"
-      ],
-      "required_actions": [
-        "Giải thích tình trạng của nạn nhân cho thân nhân",
-        "Hướng dẫn thân nhân đứng ở vị trí an toàn",
-        "Xử lý câu hỏi/căng thẳng từ thân nhân"
+        "CE3"
       ],
       "success_criteria": [
         "Giải thích ngắn gọn, dễ hiểu cho thân nhân",

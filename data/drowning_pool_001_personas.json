@@ -1,0 +1,98 @@
+{
+  "case_id": "drowning_pool_001",
+  "personas": [
+    {
+      "id": "P1",
+      "name": "Bé Nam",
+      "role": "Nạn nhân",
+      "age": 8,
+      "gender": "Nam",
+      "background": "Bé trai đang bơi cùng gia đình, không biết bơi giỏi.",
+      "personality": "Nhút nhát, dễ hoảng sợ.",
+      "goal": "Muốn được cứu và cảm thấy an toàn.",
+      "speech_pattern": "Nói lắp bắp, thỉnh thoảng ho.",
+      "emotion_init": "Sợ hãi và hoảng loạn.",
+      "emotion_during": [
+        "Sợ hãi",
+        "Hoảng loạn",
+        "Mệt mỏi",
+        "Hy vọng"
+      ],
+      "emotion_end": "An tâm khi được cứu.",
+      "voice_tags": [
+        "child_voice",
+        "scared",
+        "weak"
+      ]
+    },
+    {
+      "id": "P2",
+      "name": "Mẹ Lan",
+      "role": "Thân nhân",
+      "age": 35,
+      "gender": "Nữ",
+      "background": "Mẹ của bé Nam, rất lo lắng khi thấy con gặp nạn.",
+      "personality": "Hoảng loạn, lo lắng.",
+      "goal": "Cứu con mình và đảm bảo an toàn cho bé.",
+      "speech_pattern": "Nói nhanh, có phần lắp bắp.",
+      "emotion_init": "Hoảng loạn và lo lắng.",
+      "emotion_during": [
+        "Sợ hãi",
+        "Cảm giác bất lực",
+        "Hy vọng"
+      ],
+      "emotion_end": "Vui mừng khi con được cứu.",
+      "voice_tags": [
+        "worried_mother",
+        "urgent",
+        "emotional"
+      ]
+    },
+    {
+      "id": "P3",
+      "name": "Bảo vệ Quang",
+      "role": "Nhân viên cơ sở",
+      "age": 30,
+      "gender": "Nam",
+      "background": "Nhân viên bảo vệ tại hồ bơi, có kinh nghiệm trong việc xử lý tình huống khẩn cấp.",
+      "personality": "Quyết đoán, tự tin.",
+      "goal": "Đảm bảo an toàn cho tất cả mọi người và xử lý tình huống nhanh chóng.",
+      "speech_pattern": "Nói rõ ràng, chỉ huy.",
+      "emotion_init": "Tập trung và quyết tâm.",
+      "emotion_during": [
+        "Quyết đoán",
+        "Bình tĩnh",
+        "Chủ động"
+      ],
+      "emotion_end": "Hài lòng khi tình huống được giải quyết.",
+      "voice_tags": [
+        "confident",
+        "authoritative",
+        "calm"
+      ]
+    },
+    {
+      "id": "P4",
+      "name": "Anh Huy",
+      "role": "Người bơi gần đó",
+      "age": 25,
+      "gender": "Nam",
+      "background": "Người bơi tại hồ bơi, có kỹ năng bơi tốt.",
+      "personality": "Sẵn sàng giúp đỡ, thân thiện.",
+      "goal": "Hỗ trợ trong việc cứu bé Nam.",
+      "speech_pattern": "Nói nhẹ nhàng, hướng dẫn.",
+      "emotion_init": "Ngạc nhiên và lo lắng.",
+      "emotion_during": [
+        "Sẵn sàng",
+        "Chờ đợi",
+        "Hy vọng"
+      ],
+      "emotion_end": "Vui mừng khi thấy bé Nam an toàn.",
+      "voice_tags": [
+        "helpful",
+        "friendly",
+        "calm"
+      ]
+    }
+  ]
+}

@@ -33,7 +33,6 @@ class CanonEvent(BaseModel):
     title: str
     description: str
     preconditions: List[str]
-    required_actions: List[str]
     success_criteria: List[str]
     timeout_turn: int = Field(
         ...,
@@ -120,7 +119,7 @@ _prompt = ChatPromptTemplate.from_messages(
             "Personas liên quan:\n{personas_text}\n\n"
             "YÊU CẦU:\n"
             "- Sinh tối thiểu canon events để bao phủ các mục tiêu học tập đã nêu, mỗi event bám sát một mục tiêu tương ứng.\n"
-            "- Mỗi event phải mô tả nhiệm vụ, hành động bắt buộc và tiêu chí thành công rõ ràng.\n"
+            "- Mỗi event phải mô tả nhiệm vụ, hành động bắt buộc để thoả mãn Learning Objective rõ ràng.\n"
             "- Trường on_success dùng ID sự kiện tiếp theo hoặc null nếu kết thúc.\n"
             "- Trường on_fail bắt buộc dùng ID retry theo mẫu <ID>_RETRY (ví dụ CE2_RETRY).\n"
             "- Trường timeout_turn là số lượt hội thoại tối đa trước khi event xem như thất bại (số nguyên >= 1).\n"

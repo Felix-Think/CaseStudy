@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import json
-import sys
 from pathlib import Path
 from typing import Any, Iterable
 
 from Skeleton.graph import build_skeleton_graph
 from Skeleton.state import SkeletonState
+
+
+CASE_JSON_PATH = Path("data/drown.json")
 
 
 def _print_section(title: str, lines: Iterable[str]) -> None:
@@ -81,13 +83,9 @@ def _persist_output(state: SkeletonState, output_path: Path) -> None:
 def main() -> None:
     graph = build_skeleton_graph()
 
-    args = sys.argv[1:]
-    case_path = args[0] if len(args) >= 1 else ""
-    output_path_arg = args[1] if len(args) >= 2 else ""
-
-    state: SkeletonState = {}
-    if case_path:
-        state["case_json_path"] = str(Path(case_path).expanduser())
+    state: SkeletonState = {
+        "case_json_path": str(CASE_JSON_PATH.expanduser()),
+    }
 
     state = graph.invoke(state)  # type: ignore[assignment]
 
@@ -97,13 +95,10 @@ def main() -> None:
     canon_events = state.get("canon_events", [])
     _print_section("Canon Events", (_format_event(evt) for evt in canon_events))
 
-    output_path = (
-        Path(output_path_arg).expanduser()
-        if output_path_arg
-        else _default_output_path(str(state.get("case_id", "skeleton")))
-    )
+    output_path = _default_output_path(str(state.get("case_id", "skeleton")))
     _persist_output(state, output_path)
 
 
 if __name__ == "__main__":
     main()
+

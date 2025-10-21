@@ -77,3 +77,18 @@ poetry add <package_name>
 ```
 
 ❌ **Không sử dụng** `pip install` hay `conda install` vì sẽ làm lệch môi trường.
+
+---
+
+### 5. Chạy công cụ sinh personas (LLM)
+
+CLI `main_persona.py` đọc case JSON cố định tại `data/drown.json` và gọi LLM để xây dựng danh sách persona chi tiết theo schema chuẩn.
+
+```bash
+python main_persona.py
+```
+
+- File đầu vào được cố định tại `data/drown.json`.
+- Kết quả mặc định lưu tại `<case_id>_personas.json` trong thư mục hiện tại.
+
+Kết quả được in ra console và lưu dưới dạng JSON chứa `case_id` cùng danh sách personas với các trường đã chuẩn hóa.

@@ -30,7 +30,7 @@
     };
   </script>
 
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body class="min-h-screen font-sans bg-slate-100 text-slate-800">
   <div class="relative">
@@ -132,98 +132,9 @@
             <div class="absolute inset-x-0 top-0 h-12 bg-gradient-to-b from-white to-transparent pointer-events-none"></div>
             <div class="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
 
-            <ul class="case-feed space-y-4">
+            <ul id="case-feed" class="case-feed space-y-4">
               <li class="case-card">
-                <span class="case-id">Case #001</span>
-                <h4 class="case-title">Phân tích hành vi người dùng</h4>
-                <p class="case-desc">Dùng aggregation pipeline để tìm pattern rời bỏ.</p>
-                <div class="case-meta">
-                  <span>MongoDB Atlas</span>
-                  <span>Data Analyst</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #002</span>
-                <h4 class="case-title">Realtime Notification</h4>
-                <p class="case-desc">Thiết kế change stream đẩy thông báo cho người học.</p>
-                <div class="case-meta">
-                  <span>Node.js</span>
-                  <span>Streaming</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #003</span>
-                <h4 class="case-title">Score Prediction</h4>
-                <p class="case-desc">Huấn luyện mô hình dự báo điểm leaderboard.</p>
-                <div class="case-meta">
-                  <span>TensorFlow</span>
-                  <span>AutoML</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #004</span>
-                <h4 class="case-title">Case Recommendation</h4>
-                <p class="case-desc">Gợi ý case phù hợp dựa trên lịch sử học.</p>
-                <div class="case-meta">
-                  <span>Python</span>
-                  <span>Recommender</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #005</span>
-                <h4 class="case-title">Dashboard quản trị</h4>
-                <p class="case-desc">Tạo dashboard leaderboard với chart động.</p>
-                <div class="case-meta">
-                  <span>Next.js</span>
-                  <span>Visualization</span>
-                </div>
-              </li>
-
-              <!-- Nhân bản danh sách để tạo hiệu ứng cuộn vô hạn -->
-              <li class="case-card">
-                <span class="case-id">Case #001</span>
-                <h4 class="case-title">Phân tích hành vi người dùng</h4>
-                <p class="case-desc">Dùng aggregation pipeline để tìm pattern rời bỏ.</p>
-                <div class="case-meta">
-                  <span>MongoDB Atlas</span>
-                  <span>Data Analyst</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #002</span>
-                <h4 class="case-title">Realtime Notification</h4>
-                <p class="case-desc">Thiết kế change stream đẩy thông báo cho người học.</p>
-                <div class="case-meta">
-                  <span>Node.js</span>
-                  <span>Streaming</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #003</span>
-                <h4 class="case-title">Score Prediction</h4>
-                <p class="case-desc">Huấn luyện mô hình dự báo điểm leaderboard.</p>
-                <div class="case-meta">
-                  <span>TensorFlow</span>
-                  <span>AutoML</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #004</span>
-                <h4 class="case-title">Case Recommendation</h4>
-                <p class="case-desc">Gợi ý case phù hợp dựa trên lịch sử học.</p>
-                <div class="case-meta">
-                  <span>Python</span>
-                  <span>Recommender</span>
-                </div>
-              </li>
-              <li class="case-card">
-                <span class="case-id">Case #005</span>
-                <h4 class="case-title">Dashboard quản trị</h4>
-                <p class="case-desc">Tạo dashboard leaderboard với chart động.</p>
-                <div class="case-meta">
-                  <span>Next.js</span>
-                  <span>Visualization</span>
-                </div>
+                <span class="case-title text-sm text-slate-500">Đang tải danh sách case...</span>
               </li>
             </ul>
           </div>
@@ -231,5 +142,101 @@
       </section>
     </main>
   </div>
+  <script>
+    const MIN_ITEMS_FOR_SCROLL = 6;
+
+    const createElement = (tag, className, textContent) => {
+      const el = document.createElement(tag);
+      if (className) el.className = className;
+      if (textContent) el.textContent = textContent;
+      return el;
+    };
+
+    const buildCaseCard = (item) => {
+      const { case_id, topic, summary, location, time, who_first_on_scene } = item;
+
+      const li = createElement("li", "case-card");
+      li.appendChild(createElement("span", "case-id", case_id || "Case"));
+      li.appendChild(createElement("h4", "case-title", topic || "Chưa có tiêu đề"));
+
+      const desc = summary || "Chưa có mô tả cho case này.";
+      li.appendChild(createElement("p", "case-desc", desc));
+
+      const meta = createElement("div", "case-meta");
+      if (location) {
+        meta.appendChild(createElement("span", null, location));
+      }
+      if (time) {
+        meta.appendChild(createElement("span", null, time));
+      }
+      if (who_first_on_scene) {
+        meta.appendChild(createElement("span", null, who_first_on_scene));
+      }
+
+      if (meta.childElementCount) {
+        li.appendChild(meta);
+      }
+
+      return li;
+    };
+
+    const renderCases = (cases) => {
+      const feed = document.getElementById("case-feed");
+      if (!feed) return;
+
+      feed.innerHTML = "";
+
+      if (!cases.length) {
+        const emptyCard = createElement("li", "case-card");
+        emptyCard.appendChild(
+          createElement("p", "case-desc", "Chưa có case nào được lưu trong hệ thống.")
+        );
+        feed.appendChild(emptyCard);
+        feed.classList.remove("case-feed");
+        return;
+      }
+
+      cases.map(buildCaseCard).forEach((item) => feed.appendChild(item));
+
+      if (cases.length < MIN_ITEMS_FOR_SCROLL) {
+        const needed = MIN_ITEMS_FOR_SCROLL - cases.length;
+        for (let i = 0; i < needed; i += 1) {
+          const source = cases[i % cases.length];
+          feed.appendChild(buildCaseCard(source));
+        }
+      }
+
+      feed.classList.add("case-feed");
+    };
+
+    const loadCases = async () => {
+      const feed = document.getElementById("case-feed");
+      try {
+        const response = await fetch("/api/cases");
+        if (!response.ok) {
+          throw new Error(`Fetch failed with ${response.status}`);
+        }
+        const data = await response.json();
+        renderCases(data?.cases ?? []);
+      } catch (error) {
+        if (feed) {
+          feed.innerHTML = "";
+          const errorCard = createElement("li", "case-card");
+          errorCard.appendChild(
+            createElement(
+              "p",
+              "case-desc",
+              "Không thể tải dữ liệu case. Vui lòng kiểm tra lại FastAPI server."
+            )
+          );
+          feed.appendChild(errorCard);
+          feed.classList.remove("case-feed");
+        }
+        console.error(error);
+      }
+    };
+
+    document.addEventListener("DOMContentLoaded", loadCases);
+  </script>
 </body>
 </html>

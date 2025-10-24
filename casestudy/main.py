@@ -60,6 +60,39 @@ def invoke_graph_once(
 def render_state(state: RuntimeState) -> None:
     print("\n=== CaseStudy Engine ===")
     print(f"Canon Event hiện tại: {state.current_event}")
+    current_status = state.event_summary.get(state.current_event, "pending")
+    print(f"Trạng thái đánh giá: {current_status}")
+
+    remaining_key = f"{state.current_event}_remaining_success_criteria"
+    completed_key = f"{state.current_event}_completed_success_criteria"
+    partial_key = f"{state.current_event}_partial"
+    scores_key = f"{state.current_event}_scores"
+
+    remaining = state.event_summary.get(remaining_key, [])
+    completed = state.event_summary.get(completed_key, [])
+    partial = state.event_summary.get(partial_key, [])
+    scores = state.event_summary.get(scores_key, [])
+
+    print("\n[Success Criteria Debug]")
+    if completed:
+        print("- Đã đạt:")
+        for item in completed:
+            print(f"  • {item}")
+    if partial:
+        print("- Cần chú ý:")
+        for item in partial:
+            print(f"  • {item}")
+    if remaining:
+        print("- Còn lại:")
+        for item in remaining:
+            print(f"  • {item}")
+    if not any([completed, partial, remaining]):
+        print("  (Không có tiêu chí nào — đã đạt hoặc không được cấu hình.)")
+
+    if scores:
+        print("- Phản hồi chi tiết:")
+        for criterion, verdict in scores:
+            print(f"  • {criterion} => {verdict}")
 
     if state.scene_summary:
         print("\n[Scene Summary]")
@@ -92,9 +125,9 @@ def main() -> None:
     graph = build_case_study_graph(case_id=args.case_id, model_name=args.model)
 
     initial_event = args.event or logic_memory.first_event or "CE1"
-    state = RuntimeState(
-        case_id=args.case_id,
-        current_event=initial_event,
+    state = RuntimeState.initialize(
+        logic_memory=logic_memory,
+        start_event=initial_event,
         user_action=args.user_action,
     )
 

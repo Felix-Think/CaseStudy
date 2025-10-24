@@ -51,13 +51,10 @@ def build_scene_documents(context: Dict) -> List[Document]:
     scene = context["scene"]
     index_event = context["index_event"]
     resources = context["available_resources"]
-
-    resource_text = ", ".join(
-        resources.get("rescue", [])
-        + resources.get("medical", [])
-        + resources.get("human", [])
-    )
-
+    resource_list = []
+    for idx, resource in enumerate(resources):
+        resource_list.append({resource})
+    resource_text = ", ".join(resource_list)
     sections = [
         (
             "overview",

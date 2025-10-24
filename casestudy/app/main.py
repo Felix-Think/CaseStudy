@@ -24,4 +24,12 @@ async def serve_frontend() -> FileResponse:
     return FileResponse(index_path)
 
 
+@app.get("/nhap-case", response_class=FileResponse)
+async def serve_nhap_case() -> FileResponse:
+    nhap_case_path = FRONTEND_DIR / "nhap-case.html"
+    if not nhap_case_path.exists():
+        raise HTTPException(status_code=404, detail="nhap-case.html not found.")
+    return FileResponse(nhap_case_path)
+
+
 app.include_router(api_router, prefix="/api")

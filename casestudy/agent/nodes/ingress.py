@@ -44,6 +44,19 @@ def build_ingress_node(
         state.system_notice = None
         state.event_summary["_last_persona_dialogue"] = []
         _apply_event_limits(state, state.current_event)
+
+        current_event = logic_memory.get_event(state.current_event)
+        if current_event:
+            remaining_key = f"{state.current_event}_remaining_success_criteria"
+            completed_key = f"{state.current_event}_completed_success_criteria"
+            partial_key = f"{state.current_event}_partial"
+
+            state.event_summary.setdefault(
+                remaining_key, list(current_event.get("success_criteria", []))
+            )
+            state.event_summary.setdefault(completed_key, [])
+            state.event_summary.setdefault(partial_key, [])
+
         return state
 
     return ingress

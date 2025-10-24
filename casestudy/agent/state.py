@@ -1,7 +1,11 @@
 from __future__ import annotations
 
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
+
 from pydantic import BaseModel, Field
-from typing import Any, Dict, List, Optional
+
+if TYPE_CHECKING:
+    from .memory import LogicMemory
 
 class PersonaState(BaseModel):
     id: str
@@ -44,4 +48,44 @@ class RuntimeState(BaseModel):
             else:
                 normalized_personas[persona_id] = PersonaState(**persona_payload)
         payload["active_personas"] = normalized_personas
+        event_summary = payload.get("event_summary")
+        if event_summary is None or not isinstance(event_summary, dict):
+            event_summary = {}
+        event_summary.setdefault("_last_scene_event", None)
+        event_summary.setdefault("_last_persona_dialogue", [])
+        payload["event_summary"] = event_summary
         return cls(**payload)
+
+    @classmethod
+    def initialize(
+        cls,
+        *,
+        logic_memory: "LogicMemory",
+        start_event: str,
+        user_action: Optional[str] = None,
+    ) -> "RuntimeState":
+        event = logic_memory.get_event(start_event) or {}
+        success_list = list(event.get("success_criteria", [])) if event else []
+
+        event_summary: Dict[str, Any] = {
+            "_last_scene_event": None,
+            "_last_persona_dialogue": [],
+            start_event: "pending",
+            f"{start_event}_remaining_success_criteria": list(success_list),
+            f"{start_event}_completed_success_criteria": [],
+            f"{start_event}_partial": [],
+            f"{start_event}_matched": [],
+            f"{start_event}_scores": [],
+            f"{start_event}_last_result": None,
+            f"{start_event}_reason": None,
+        }
+
+        max_turns = event.get("timeout_turn", 0) if event else 0
+
+        return cls(
+            case_id=logic_memory.case_id,
+            current_event=start_event,
+            max_turns=max_turns or 0,
+            user_action=user_action,
+            event_summary=event_summary,
+        )

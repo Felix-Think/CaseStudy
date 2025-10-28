@@ -937,9 +937,403 @@
 
       activateTab("skeleton");
 
+      const API_ENDPOINT = "/api/cases";
+
+      const ensureToastRoot = () => {
+        let root = document.getElementById("toast-root");
+        if (!root) {
+          root = document.createElement("div");
+          root.id = "toast-root";
+          root.className = "fixed top-4 right-4 z-50 flex flex-col gap-3";
+          document.body.appendChild(root);
+        }
+        return root;
+      };
+
+      const showNotification = (message, type = "success") => {
+        const root = ensureToastRoot();
+        const toast = document.createElement("div");
+        const baseClasses = "rounded-xl px-4 py-3 text-sm font-semibold shadow-lg backdrop-blur";
+        const palette =
+          type === "error"
+            ? "bg-red-600/90 text-white"
+            : type === "info"
+            ? "bg-slate-800/90 text-white"
+            : "bg-emerald-600/90 text-white";
+        toast.className = `${baseClasses} ${palette}`;
+        toast.textContent = message;
+        root.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add("opacity-0", "transition");
+          setTimeout(() => {
+            toast.remove();
+            if (!root.children.length) {
+              root.remove();
+            }
+          }, 200);
+        }, 4000);
+      };
+
+      const slugify = (value, fallback) => {
+        if (!value) {
+          return fallback;
+        }
+        return value
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "_")
+          .replace(/^_|_$/g, "") || fallback;
+      };
+
+      const parseLines = (raw) => {
+        if (!raw) return [];
+        return raw
+          .split(/\r?\n/)
+          .map((item) => item.trim())
+          .filter(Boolean);
+      };
+
+      const parseNPC = (raw) => {
+        if (!raw) return [];
+        return raw
+          .split(/[\n,]+/)
+          .map((segment) => {
+            const [personaId, ...roleParts] = segment.split(":");
+            const id = (personaId || "").trim();
+            const role = roleParts.join(":").trim();
+            if (!id) return null;
+            return role ? { persona_id: id, role } : { persona_id: id };
+          })
+          .filter(Boolean);
+      };
+
+      const findFieldByLabel = (root, keyword) => {
+        if (!root) return null;
+        const normalizedKeyword = keyword.toLowerCase();
+        const labels = Array.from(root.querySelectorAll("label"));
+        for (const label of labels) {
+          const text = (label.textContent || "").toLowerCase().replace(/\s+/g, " ").trim();
+          if (text.includes(normalizedKeyword)) {
+            return label.querySelector("input, textarea");
+          }
+        }
+        return null;
+      };
+
+      const extractSkeleton = () => {
+        const skeletonPanel = document.querySelector('[data-panel="skeleton"]');
+        if (!skeletonPanel) {
+          return { case_id: "", title: "", canon_events: [] };
+        }
+        const form = skeletonPanel.querySelector("form");
+        const caseId = (findFieldByLabel(form, "case id")?.value || "").trim();
+        const caseTitle = (findFieldByLabel(form, "tên case")?.value || "").trim();
+
+        const events = Array.from(form.querySelectorAll("[data-event-block]"))
+          .map((block, index) => {
+            const eventId = (findFieldByLabel(block, "mã sự kiện")?.value || "").trim();
+            const title = (findFieldByLabel(block, "tiêu đề")?.value || "").trim();
+            const description = (findFieldByLabel(block, "mô tả chi tiết")?.value || "").trim();
+            const successRaw = findFieldByLabel(block, "success criteria")?.value || "";
+            const npcRaw = (findFieldByLabel(block, "npc")?.value || "").trim();
+            const timeoutRaw = (findFieldByLabel(block, "timeout")?.value || "").trim();
+            const onSuccess = (findFieldByLabel(block, "on success")?.value || "").trim();
+            const onFail = (findFieldByLabel(block, "on fail")?.value || "").trim();
+
+            const hasContent =
+              eventId ||
+              title ||
+              description ||
+              successRaw.trim() ||
+              npcRaw ||
+              timeoutRaw ||
+              onSuccess ||
+              onFail;
+            if (!hasContent) {
+              return null;
+            }
+
+            const timeout = timeoutRaw ? Number.parseInt(timeoutRaw, 10) : null;
+
+            return {
+              id: eventId || `event_${index + 1}`,
+              title,
+              description,
+              success_criteria: parseLines(successRaw),
+              npc_appearance: parseNPC(npcRaw),
+              timeout_turn: Number.isFinite(timeout) ? timeout : null,
+              preconditions: [],
+              on_success: onSuccess || null,
+              on_fail: onFail || null,
+            };
+          })
+          .filter(Boolean);
+
+        return {
+          case_id: caseId,
+          title: caseTitle,
+          canon_events: events,
+        };
+      };
+
+      const extractContext = () => {
+        const contextPanel = document.querySelector('[data-panel="context"]');
+        if (!contextPanel) {
+          return {
+            case_id: "",
+            topic: "",
+            initial_context: {
+              scene: { time: "", weather: "", location: "", noise_level: "" },
+              index_event: { summary: "", current_state: "", who_first_on_scene: "" },
+              available_resources: {},
+              constraints: [],
+              policies_safety_legal: [],
+              handover_target: "",
+              success_end_state: "",
+            },
+          };
+        }
+
+        const form = contextPanel.querySelector("form");
+        const caseId = (findFieldByLabel(form, "case id")?.value || "").trim();
+        const topic = (findFieldByLabel(form, "chủ đề case")?.value || "").trim();
+
+        const scene = {
+          time: (findFieldByLabel(form, "thời gian")?.value || "").trim(),
+          weather: (findFieldByLabel(form, "thời tiết")?.value || "").trim(),
+          location: (findFieldByLabel(form, "vị trí")?.value || "").trim(),
+          noise_level: (findFieldByLabel(form, "mức độ ồn")?.value || "").trim(),
+        };
+
+        const indexEvent = {
+          summary: (findFieldByLabel(form, "tóm tắt sự kiện")?.value || "").trim(),
+          current_state: (findFieldByLabel(form, "tình trạng hiện tại")?.value || "").trim(),
+          who_first_on_scene: (findFieldByLabel(form, "ai tiếp cận đầu tiên")?.value || "").trim(),
+        };
+
+        const resourceBlocks = Array.from(form.querySelectorAll("[data-resource-block]"));
+        const availableResources = {};
+        const resourceMeta = {};
+
+        resourceBlocks.forEach((block, index) => {
+          const name = (findFieldByLabel(block, "tên nhóm")?.value || "").trim();
+          const note = (findFieldByLabel(block, "ghi chú")?.value || "").trim();
+          const items = parseLines(findFieldByLabel(block, "danh sách nguồn lực")?.value || "");
+          if (!name && !note && !items.length) {
+            return;
+          }
+          const key = slugify(name, `resource_${index + 1}`);
+          const resources = [...items];
+          if (note) {
+            resources.push(`NOTE: ${note}`);
+          }
+          availableResources[key] = resources;
+          resourceMeta[key] = {
+            label: name || `Nhóm ${index + 1}`,
+            note: note || "",
+          };
+        });
+
+        const constraints = parseLines(findFieldByLabel(form, "ràng buộc hiện trường")?.value || "");
+        const policies = parseLines(findFieldByLabel(form, "chính sách")?.value || "");
+        const handoverTarget = (findFieldByLabel(form, "đơn vị bàn giao")?.value || "").trim();
+        const successEndState = (findFieldByLabel(form, "trạng thái thành công cuối cùng")?.value || "").trim();
+
+        const initialContext = {
+          scene,
+          index_event: indexEvent,
+          available_resources: availableResources,
+          constraints,
+          policies_safety_legal: policies,
+          handover_target: handoverTarget,
+          success_end_state: successEndState,
+        };
+
+        if (Object.keys(resourceMeta).length) {
+          initialContext.available_resources_meta = resourceMeta;
+        }
+
+        return {
+          case_id: caseId,
+          topic,
+          initial_context: initialContext,
+        };
+      };
+
+      const extractPersonas = () => {
+        const personasPanel = document.querySelector('[data-panel="personas"]');
+        if (!personasPanel) {
+          return { case_id: "", personas: [] };
+        }
+
+        const form = personasPanel.querySelector("form");
+        const caseId = (findFieldByLabel(form, "case id")?.value || "").trim();
+
+        const personas = Array.from(form.querySelectorAll("[data-persona-item]"))
+          .map((item, index) => {
+            const id = (findFieldByLabel(item, "persona id")?.value || "").trim();
+            const name = (findFieldByLabel(item, "tên nhân vật")?.value || "").trim();
+            const role = (findFieldByLabel(item, "vai trò")?.value || "").trim();
+            const ageRaw = (findFieldByLabel(item, "tuổi")?.value || "").trim();
+            const gender = (findFieldByLabel(item, "giới tính")?.value || "").trim();
+            const background = (findFieldByLabel(item, "lý lịch")?.value || "").trim();
+            const personality = (findFieldByLabel(item, "tính cách")?.value || "").trim();
+            const goal = (findFieldByLabel(item, "mục tiêu")?.value || "").trim();
+            const speechPattern = (findFieldByLabel(item, "speech pattern")?.value || "").trim();
+            const emotionInit = (findFieldByLabel(item, "emotion ban đầu")?.value || "").trim();
+            const emotionEnd = (findFieldByLabel(item, "emotion kết thúc")?.value || "").trim();
+            const voiceTagsRaw = (findFieldByLabel(item, "voice tags")?.value || "").trim();
+            const emotionDuring = parseLines(
+              findFieldByLabel(item, "emotion trong quá trình")?.value || ""
+            );
+
+            const hasContent =
+              id ||
+              name ||
+              role ||
+              ageRaw ||
+              gender ||
+              background ||
+              personality ||
+              goal ||
+              speechPattern ||
+              emotionInit ||
+              emotionEnd ||
+              voiceTagsRaw ||
+              emotionDuring.length;
+            if (!hasContent) {
+              return null;
+            }
+
+            const age = ageRaw ? Number.parseInt(ageRaw, 10) : null;
+            const voiceTags = voiceTagsRaw
+              ? voiceTagsRaw
+                  .split(/[,;]/)
+                  .map((tag) => tag.trim())
+                  .filter(Boolean)
+              : [];
+
+            return {
+              id: id || `persona_${index + 1}`,
+              name,
+              role,
+              age: Number.isFinite(age) ? age : null,
+              gender,
+              background,
+              personality,
+              goal,
+              speech_pattern: speechPattern,
+              emotion_init: emotionInit,
+              emotion_during: emotionDuring,
+              emotion_end: emotionEnd,
+              voice_tags: voiceTags,
+            };
+          })
+          .filter(Boolean);
+
+        return {
+          case_id: caseId,
+          personas,
+        };
+      };
+
+      const buildCasePayload = () => {
+        const skeleton = extractSkeleton();
+        const context = extractContext();
+        const personasPayload = extractPersonas();
+
+        const resolvedCaseId =
+          skeleton.case_id || context.case_id || personasPayload.case_id;
+
+        if (!resolvedCaseId) {
+          throw new Error("Vui lòng nhập Case ID ở ít nhất một tab trước khi lưu.");
+        }
+
+        skeleton.case_id = skeleton.case_id || resolvedCaseId;
+        context.case_id = context.case_id || resolvedCaseId;
+        personasPayload.case_id = personasPayload.case_id || resolvedCaseId;
+
+        return {
+          case_id: resolvedCaseId,
+          context,
+          personas: {
+            case_id: personasPayload.case_id,
+            personas: personasPayload.personas,
+          },
+          skeleton,
+        };
+      };
+
+      const toggleButtonState = (button, isLoading) => {
+        if (!button) return;
+        if (isLoading) {
+          button.dataset.originalText = button.textContent || "";
+          button.disabled = true;
+          button.textContent = "Đang lưu...";
+          button.classList.add("opacity-60", "cursor-wait");
+        } else {
+          button.disabled = false;
+          if (button.dataset.originalText) {
+            button.textContent = button.dataset.originalText;
+            delete button.dataset.originalText;
+          }
+          button.classList.remove("opacity-60", "cursor-wait");
+        }
+      };
+
       document.querySelectorAll("form[data-prevent-submit]").forEach((form) => {
-        form.addEventListener("submit", (event) => {
+        form.addEventListener("submit", async (event) => {
           event.preventDefault();
+          const submitter = event.submitter || form.querySelector('button[type="submit"]');
+          toggleButtonState(submitter, true);
+
+          try {
+            const payload = buildCasePayload();
+            if (!payload.skeleton.canon_events.length) {
+              throw new Error("Vui lòng nhập ít nhất một Canon Event.");
+            }
+            if (!payload.personas.personas.length) {
+              throw new Error("Vui lòng nhập ít nhất một Persona.");
+            }
+
+            showNotification("Đang gửi dữ liệu lên máy chủ...", "info");
+            const response = await fetch(API_ENDPOINT, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              credentials: "same-origin",
+              body: JSON.stringify(payload),
+            });
+
+            const contentType = response.headers.get("content-type") || "";
+            const responseData = contentType.includes("application/json") ? await response.json() : null;
+
+            if (!response.ok) {
+              const detail =
+                (responseData && (responseData.detail || responseData.message)) ||
+                "Không thể lưu case. Vui lòng thử lại.";
+              throw new Error(detail);
+            }
+
+            const payloadInfo = {
+              case_id: responseData?.case_id ?? payload.case_id,
+              personas_count:
+                typeof responseData?.personas_count === "number"
+                  ? responseData.personas_count
+                  : payload.personas.personas.length,
+            };
+
+            showNotification(
+              `Đã lưu case '${payloadInfo.case_id}' thành công (${payloadInfo.personas_count} personas).`
+            );
+          } catch (error) {
+            console.error(error);
+            showNotification(error.message || "Có lỗi xảy ra khi lưu case.", "error");
+          } finally {
+            toggleButtonState(submitter, false);
+          }
         });
       });
 

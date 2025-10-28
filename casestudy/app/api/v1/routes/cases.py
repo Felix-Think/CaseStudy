@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from casestudy.app.dependencies.cases import get_case_service
-from casestudy.app.schemas.case import CaseListResponse
+from casestudy.app.schemas.case import CaseCreatePayload, CaseCreateResponse, CaseListResponse
 from casestudy.app.services.case_service import CaseService
 
 router = APIRouter(prefix="/cases", tags=["cases"])
@@ -15,3 +15,20 @@ async def list_cases_endpoint(
     service: CaseService = Depends(get_case_service),
 ) -> CaseListResponse:
     return service.list_cases(limit=limit)
+
+
+@router.post(
+    "/",
+    response_model=CaseCreateResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_case_endpoint(
+    payload: CaseCreatePayload,
+    service: CaseService = Depends(get_case_service),
+) -> CaseCreateResponse:
+    try:
+        return service.create_case(payload)
+    except ValueError as exc:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)) from exc

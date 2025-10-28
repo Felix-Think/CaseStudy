@@ -11,19 +11,46 @@ load_dotenv()
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+CASE_ROOT = BASE_DIR / "cases"
+AGENT_CASE_ROOT = BASE_DIR / "agent" / "cases"
 
-CASE_ID = "drowning_pool_001"
-case_dir = BASE_DIR / "cases" / CASE_ID
-logic_dir = case_dir / "logic_memory"
-semantic_dir = case_dir / "semantic_memory"
-scene_index_dir = semantic_dir / "scene_index"
-persona_index_dir = semantic_dir / "persona_index"
-policy_index_dir = semantic_dir / "policy_index"
+CASE_ID: str | None = None
+case_dir: Path | None = None
+logic_dir: Path | None = None
+semantic_dir: Path | None = None
+scene_index_dir: Path | None = None
+persona_index_dir: Path | None = None
+policy_index_dir: Path | None = None
 
-semantic_dir.mkdir(parents=True, exist_ok=True)
+
+def configure_paths(case_id: str) -> None:
+    """
+    Cấu hình lại các đường dẫn semantic cho case_id tương ứng.
+    """
+    global CASE_ID, case_dir, logic_dir, semantic_dir, scene_index_dir, persona_index_dir, policy_index_dir
+
+    CASE_ID = case_id
+    case_dir = CASE_ROOT / case_id
+    logic_dir = case_dir / "logic_memory"
+    if not logic_dir.exists():
+        logic_dir = case_dir
+
+    AGENT_CASE_ROOT.mkdir(parents=True, exist_ok=True)
+    semantic_dir = AGENT_CASE_ROOT / case_id / "semantic_memory"
+    semantic_dir.mkdir(parents=True, exist_ok=True)
+
+    scene_index_dir = semantic_dir / "scene_index"
+    persona_index_dir = semantic_dir / "persona_index"
+    policy_index_dir = semantic_dir / "policy_index"
+
+
+def _ensure_configured() -> None:
+    if CASE_ID is None or case_dir is None or logic_dir is None or semantic_dir is None:
+        raise RuntimeError("Semantic paths chưa được cấu hình. Hãy gọi configure_paths(case_id) trước.")
 
 
 def load_initial_context() -> Dict:
+    _ensure_configured()
     context_path = logic_dir / "context.json"
     with context_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
@@ -31,6 +58,7 @@ def load_initial_context() -> Dict:
 
 
 def load_personas() -> List[Dict]:
+    _ensure_configured()
     personas_path = logic_dir / "personas.json"
     with personas_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
@@ -48,6 +76,7 @@ def normalize_metadata(metadata: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def build_scene_documents(context: Dict) -> List[Document]:
+    _ensure_configured()
     scene = context["scene"]
     index_event = context["index_event"]
     resources = context["available_resources"]
@@ -73,10 +102,10 @@ def build_scene_documents(context: Dict) -> List[Document]:
     return [
         Document(
             page_content=text,
-            metadata=normalize_metadata(
-                {
-                    "type": "scene",
-                    "case_id": CASE_ID,
+                metadata=normalize_metadata(
+                    {
+                        "type": "scene",
+                        "case_id": CASE_ID,
                     "section": section,
                 }
             ),
@@ -86,6 +115,7 @@ def build_scene_documents(context: Dict) -> List[Document]:
 
 
 def build_persona_documents(personas: List[Dict]) -> List[Document]:
+    _ensure_configured()
     documents = []
     for persona in personas:
         emotions = list(
@@ -145,6 +175,7 @@ def build_persona_documents(personas: List[Dict]) -> List[Document]:
 
 
 def build_policy_documents(context: Dict) -> List[Document]:
+    _ensure_configured()
     policies = context.get("policies_safety_legal", [])
     documents = []
     for idx, policy in enumerate(policies):
@@ -193,6 +224,7 @@ def build_indices() -> None:
 
 
 def load_indices():
+    _ensure_configured()
     return (
         Chroma(persist_directory=str(scene_index_dir), embedding_function=embeddings),
         Chroma(persist_directory=str(persona_index_dir), embedding_function=embeddings),
@@ -201,7 +233,7 @@ def load_indices():
 
 
 if __name__ == "__main__":
-    #build_indices()
+    configure_paths(CASE_ID or "drowning_pool_001")
 
     scene_index, persona_index, policy_index = load_indices()
 

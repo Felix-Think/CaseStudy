@@ -36,13 +36,14 @@ def load_case(case_id, save_to_disk=True):
         context = db.contexts.find_one({"case_id": case_id})
         personas = list(db.personas.find({"case_id": case_id}))
         skeleton = db.skeletons.find_one({"case_id": case_id})
+        print(f"✅ Đã load dữ liệu case '{case_id}' từ MongoDB.")
     except PyMongoError as exc:
         print(f"⚠️ Không thể kết nối MongoDB ({exc}). Đọc dữ liệu local.")
         return _load_local_case(case_id, save_to_disk=save_to_disk)
 
     if not (context or personas or skeleton):
         print(f"❌ Không tìm thấy dữ liệu cho case_id: {case_id}")
-        return _load_local_case(case_id, save_to_disk=save_to_disk)
+        #return _load_local_case(case_id, save_to_disk=save_to_disk)
 
     # Xóa _id của MongoDB
     if context: context.pop("_id", None)
@@ -58,18 +59,22 @@ def load_case(case_id, save_to_disk=True):
 
 
 def _load_local_case(case_id, save_to_disk=True):
-    logic_dir = LOCAL_CASES_DIR / case_id / "logic_memory"
-    if not logic_dir.exists():
+    data_dir = _resolve_local_case_dir(case_id)
+    if data_dir is None:
         print(f"❌ Không tìm thấy dữ liệu local cho case_id: {case_id}")
         return None, None, None
 
     try:
-        with (logic_dir / "context.json").open("r", encoding="utf-8") as f:
+        with (data_dir / "context.json").open("r", encoding="utf-8") as f:
             context = json.load(f)
-        with (logic_dir / "personas.json").open("r", encoding="utf-8") as f:
+        with (data_dir / "personas.json").open("r", encoding="utf-8") as f:
             personas_payload = json.load(f)
-            personas = personas_payload.get("personas", [])
-        with (logic_dir / "skeleton.json").open("r", encoding="utf-8") as f:
+            personas = (
+                personas_payload.get("personas", [])
+                if isinstance(personas_payload, dict)
+                else personas_payload
+            )
+        with (data_dir / "skeleton.json").open("r", encoding="utf-8") as f:
             skeleton = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError) as exc:
         print(f"❌ Lỗi đọc dữ liệu local cho case_id {case_id}: {exc}")
@@ -77,19 +82,19 @@ def _load_local_case(case_id, save_to_disk=True):
 
     if save_to_disk:
         base_dir = _persist_case_to_disk(case_id, context, personas, skeleton)
-        print(f"💾 Đã lưu dữ liệu case '{case_id}' từ local vào thư mục {base_dir}")
+        print(f"💾 Đã đồng bộ dữ liệu case '{case_id}' từ local vào thư mục {base_dir}")
 
     return context, personas, skeleton
 
 
 def _persist_case_to_disk(case_id, context, personas, skeleton):
-    base_dir = os.path.join("CaseStudyData", case_id)
+    base_dir = LOCAL_CASES_DIR / case_id
     os.makedirs(base_dir, exist_ok=True)
-    with open(os.path.join(base_dir, "context.json"), "w", encoding="utf-8") as f:
+    with open(base_dir / "context.json", "w", encoding="utf-8") as f:
         json.dump(context, f, ensure_ascii=False, indent=2)
-    with open(os.path.join(base_dir, "personas.json"), "w", encoding="utf-8") as f:
-        json.dump({"personas": personas}, f, ensure_ascii=False, indent=2)
-    with open(os.path.join(base_dir, "skeleton.json"), "w", encoding="utf-8") as f:
+    with open(base_dir / "personas.json", "w", encoding="utf-8") as f:
+        json.dump({"case_id": case_id, "personas": personas}, f, ensure_ascii=False, indent=2)
+    with open(base_dir / "skeleton.json", "w", encoding="utf-8") as f:
         json.dump(skeleton, f, ensure_ascii=False, indent=2)
     return base_dir
 
@@ -101,6 +106,22 @@ def load_case_from_local(case_id: str):
     return _load_local_case(case_id, save_to_disk=False)
 
 
+def _resolve_local_case_dir(case_id: str):
+    """
+    Xác định thư mục chứa bộ ba context/personas/skeleton cho case_id.
+    Hỗ trợ cả cấu trúc mới (JSON ngay trong cases/<case_id>) và cấu trúc cũ (/logic_memory).
+    """
+    candidates = [
+        LOCAL_CASES_DIR / case_id,
+        LOCAL_CASES_DIR / case_id / "logic_memory",
+    ]
+
+    for candidate in candidates:
+        if (candidate / "context.json").exists():
+            return candidate
+    return None
+
+
 # -------------------------
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -109,4 +130,7 @@ if __name__ == "__main__":
     else:
         case_id = sys.argv[1]
         ctx, pers, skel = load_case(case_id, save_to_disk=True)
-        print(f"🎯 Đã load dữ liệu: {len(pers)} personas, {len(skel['canon_events'])} events.")
+        if ctx and pers and skel:
+            print(f"🎯 Đã load dữ liệu: {len(pers)} personas, {len(skel.get('canon_events', []))} events.")
+        else:
+            print("⚠️ Không có đủ dữ liệu để thống kê personas/events.")

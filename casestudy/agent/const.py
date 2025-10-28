@@ -9,6 +9,7 @@ RUNTIME_STATE_DIRNAME = "runtime_state"
 RUNTIME_STATE_FILENAME = "runtime_state.json"
 
 CASESTUDY_ROOT = Path(__file__).resolve().parents[1]
+AGENT_CASE_ROOT = CASESTUDY_ROOT / "agent" / "cases"
 
 
 def get_case_dir(case_id: str = DEFAULT_CASE_ID) -> Path:
@@ -20,7 +21,7 @@ def get_logic_memory_dir(case_id: str = DEFAULT_CASE_ID) -> Path:
 
 
 def get_runtime_state_dir(case_id: str = DEFAULT_CASE_ID) -> Path:
-    return get_case_dir(case_id) / RUNTIME_STATE_DIRNAME
+    return AGENT_CASE_ROOT / case_id / RUNTIME_STATE_DIRNAME
 
 
 def get_runtime_state_path(case_id: str = DEFAULT_CASE_ID) -> Path:

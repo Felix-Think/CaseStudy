@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from .const import get_logic_memory_dir
+from .const import get_case_dir, get_logic_memory_dir
 
 
 @dataclass
@@ -19,6 +19,11 @@ class LogicMemory:
     @classmethod
     def load(cls, case_id: str) -> "LogicMemory":
         logic_dir = get_logic_memory_dir(case_id)
+        if not logic_dir.exists():
+            logic_dir = get_case_dir(case_id)
+            if not logic_dir.exists():
+                raise FileNotFoundError(f"Không tìm thấy dữ liệu cho case_id '{case_id}'.")
+
         skeleton = _read_json(logic_dir / "skeleton.json")
         personas_payload = _read_json(logic_dir / "personas.json")
         context_payload = _read_json(logic_dir / "context.json")

@@ -4,628 +4,321 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Nhập Case</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: {
-              50: '#E6F8F3',
-              100: '#C7EEDF',
-              200: '#99DFC5',
-              500: '#1EA97C',
-              600: '#158F69'
-            }
-          },
-          fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui']
-          },
-          boxShadow: {
-            card: '0 20px 45px -25px rgba(15, 23, 42, 0.35)'
-          }
-        }
-      }
-    };
-  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-800">
-  <div class="relative flex min-h-screen flex-col">
-    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-primary-50 via-white to-slate-100"></div>
-    <header class="sticky top-0 z-40 border-b border-slate-100 bg-white/80 backdrop-blur">
-      <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-        <a href="/" class="text-sm font-semibold text-primary-600 transition hover:text-primary-500">Quay lại trang chính</a>
-        <span class="text-sm text-slate-500">Tổng hợp nội dung từ JSON</span>
+<body class="app-body">
+  <div class="app-bg"></div>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-header__inner">
+        <div class="brand">
+          <div class="brand__icon">TAT</div>
+          <div class="brand__text">
+            <span class="brand__label">CaseStudy</span>
+            <h1 class="brand__title">Nhập Case</h1>
+          </div>
+        </div>
+        <nav class="header-actions">
+          <a class="btn btn--ghost action-desktop" href="/">Trang chính</a>
+          <a class="btn btn--ghost action-desktop" href="/chatframe">Chat Frame</a>
+          <span class="pill">JSON Builder</span>
+        </nav>
       </div>
     </header>
-    <main class="flex-1 px-6 py-16">
-      <div class="mx-auto flex max-w-6xl flex-col gap-10">
-        <header class="space-y-4 border-b border-slate-100 pb-6">
-          <h1 class="text-3xl font-semibold text-slate-900">Trang Nhập Case</h1>
-          <p class="text-sm text-slate-600">
-            Giao diện này giúp bạn chuẩn bị dữ liệu cho case mới với ba phần chính: Skeleton, Context và Personas.
+
+    <main class="app-main">
+      <div class="form-page">
+        <header class="form-header">
+          <span class="pill">Chuẩn bị dữ liệu</span>
+          <h2 class="form-title">Tạo và cập nhật CaseStudy Skeleton</h2>
+          <p class="form-subtitle">
+            Sử dụng các tab bên dưới để nhập Skeleton, Context và Personas. Các biểu mẫu này giúp bạn chuẩn bị
+            JSON trước khi gửi tới hệ thống hoặc chia sẻ cho mentor.
           </p>
-          <p class="text-xs text-slate-500">
-            Chọn thẻ tương ứng để nhập dữ liệu. Nội dung chỉ lưu trên trình duyệt trừ khi bạn tự xử lý tải lên máy chủ.
-          </p>
+          <p class="form-note">Nội dung chỉ lưu trên trình duyệt cho tới khi bạn tự tải xuống hoặc sao chép.</p>
         </header>
 
-        <div class="flex flex-wrap gap-3" role="tablist" aria-label="Biểu mẫu nhập case">
-          <button
-            type="button"
-            role="tab"
-            id="tab-skeleton"
-            data-tab="skeleton"
-            aria-controls="panel-skeleton"
-            aria-selected="true"
-            class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
-          >
-            Nhập Skeleton
-          </button>
-          <button
-            type="button"
-            role="tab"
-            id="tab-context"
-            data-tab="context"
-            aria-controls="panel-context"
-            aria-selected="false"
-            class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
-          >
-            Nhập Context
-          </button>
-          <button
-            type="button"
-            role="tab"
-            id="tab-personas"
-            data-tab="personas"
-            aria-controls="panel-personas"
-            aria-selected="false"
-            class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
-          >
-            Nhập Personas
-          </button>
+        <div class="tab-bar" role="tablist" aria-label="Chế độ nhập case">
+          <button type="button" role="tab" id="tab-skeleton" data-tab="skeleton" aria-controls="panel-skeleton" aria-selected="true" class="tab-btn is-active">Skeleton</button>
+          <button type="button" role="tab" id="tab-context" data-tab="context" aria-controls="panel-context" aria-selected="false" class="tab-btn">Context</button>
+          <button type="button" role="tab" id="tab-personas" data-tab="personas" aria-controls="panel-personas" aria-selected="false" class="tab-btn">Personas</button>
         </div>
 
-        <section
-          id="panel-skeleton"
-          role="tabpanel"
-          aria-labelledby="tab-skeleton"
-          data-panel="skeleton"
-          class="tab-panel rounded-3xl border border-slate-100 bg-white/80 p-8 shadow-card"
-        >
-          <form data-prevent-submit class="space-y-6">
-            <div class="grid gap-4 md:grid-cols-2">
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Case ID
-                <input
-                  type="text"
-                  placeholder="ví dụ: case_training_001"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Tên case
-                <input
-                  type="text"
-                  placeholder="ví dụ: Huấn luyện xử lý sự cố khẩn cấp"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
+        <section id="panel-skeleton" role="tabpanel" aria-labelledby="tab-skeleton" data-panel="skeleton" class="tab-panel is-active">
+          <form class="form-section" data-prevent-submit>
+            <div class="field-grid" data-cols="2">
+              <div class="field">
+                <label class="field-label" for="skeleton-case-id">Case ID</label>
+                <input id="skeleton-case-id" type="text" class="input" placeholder="ví dụ: case_training_001" />
+              </div>
+              <div class="field">
+                <label class="field-label" for="skeleton-case-name">Tên case</label>
+                <input id="skeleton-case-name" type="text" class="input" placeholder="ví dụ: Huấn luyện xử lý sự cố" />
+              </div>
             </div>
 
-            <div>
-              <div class="flex flex-wrap items-center gap-3">
-                <h2 class="text-base font-semibold text-slate-900">Danh sách Canon Event</h2>
-              </div>
-              <p class="mt-2 text-xs text-slate-500">
-                Điền từng bước theo trình tự của case. Có thể thêm nhiều event và chỉnh timeout, NPC, nhánh chuyển tiếp.
-              </p>
-              <div class="mt-4 space-y-4" data-skeleton-events>
-                <div data-event-block class="rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-                  <div class="flex flex-wrap items-center justify-between gap-3">
-                    <h3 class="text-sm font-semibold text-slate-900">Canon Event</h3>
-                    <button
-                      type="button"
-                      data-remove-event
-                      class="text-xs font-semibold text-slate-500 transition hover:text-primary-600"
-                    >
-                      Xóa
-                    </button>
+            <div class="field">
+              <label class="field-label" for="skeleton-summary">Tổng quan</label>
+              <textarea id="skeleton-summary" class="textarea" rows="3" placeholder="Mô tả ngắn về mục tiêu case và phạm vi đào tạo."></textarea>
+            </div>
+
+            <div class="block-list" data-skeleton-events>
+              <div class="block-card" data-event-block>
+                <div class="block-head">
+                  <h3 class="block-title">Canon Event</h3>
+                  <button type="button" data-remove-event class="link-action">Xóa</button>
+                </div>
+                <div class="field-grid" data-cols="2">
+                  <div class="field">
+                    <label class="field-label">Mã sự kiện</label>
+                    <input type="text" class="input" placeholder="ví dụ: CE1" />
                   </div>
-                  <div class="mt-4 grid gap-4 md:grid-cols-2">
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Mã sự kiện
-                      <input
-                        type="text"
-                        placeholder="ví dụ: CE1"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Tiêu đề
-                      <input
-                        type="text"
-                        placeholder="ví dụ: Đánh giá ban đầu hiện trường"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
+                  <div class="field">
+                    <label class="field-label">Tiêu đề</label>
+                    <input type="text" class="input" placeholder="ví dụ: Đánh giá hiện trường" />
                   </div>
-                  <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Mô tả chi tiết
-                    <textarea
-                      rows="3"
-                      placeholder="Mô tả ngắn gọn về nhiệm vụ của event."
-                      class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                    ></textarea>
-                  </label>
-                  <div class="mt-4 grid gap-4 md:grid-cols-2">
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Success Criteria
-                      <textarea
-                        rows="3"
-                        placeholder="Ghi từng tiêu chí trên một dòng."
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      ></textarea>
-                    </label>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      NPC xuất hiện
-                      <input
-                        type="text"
-                        placeholder="ví dụ: P1: Điều phối viên, P2: Người hỗ trợ"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
+                </div>
+                <div class="field">
+                  <label class="field-label">Mô tả chi tiết</label>
+                  <textarea class="textarea" rows="3" placeholder="Mô tả nhiệm vụ chính của event."></textarea>
+                </div>
+                <div class="field-grid" data-cols="2">
+                  <div class="field">
+                    <label class="field-label">Success criteria</label>
+                    <textarea class="textarea" rows="3" placeholder="Ghi từng tiêu chí trên một dòng."></textarea>
                   </div>
-                  <div class="mt-4 grid gap-4 md:grid-cols-3">
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Timeout (lượt)
-                      <input
-                        type="number"
-                        min="0"
-                        placeholder="ví dụ: 3"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      On Success
-                      <input
-                        type="text"
-                        placeholder="ví dụ: CE2"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      On Fail
-                      <input
-                        type="text"
-                        placeholder="ví dụ: CE1_RETRY"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
+                  <div class="field">
+                    <label class="field-label">NPC tham gia</label>
+                    <input type="text" class="input" placeholder="ví dụ: P1 - Điều phối viên" />
+                  </div>
+                </div>
+                <div class="field-grid" data-cols="3">
+                  <div class="field">
+                    <label class="field-label">Timeout</label>
+                    <input type="number" min="0" class="input" placeholder="ví dụ: 3" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">On Success</label>
+                    <input type="text" class="input" placeholder="ví dụ: CE2" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">On Fail</label>
+                    <input type="text" class="input" placeholder="ví dụ: CE1_RETRY" />
                   </div>
                 </div>
               </div>
-              <div class="mt-4 flex justify-end">
-                <button
-                  type="button"
-                  data-add-event
-                  class="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-4 py-2 text-xs font-semibold text-primary-600 transition hover:border-primary-400 hover:bg-primary-100"
-                >
-                  + Thêm event
-                </button>
-              </div>
             </div>
 
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
-              <button
-                type="reset"
-                class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:text-primary-600"
-              >
-                Reset
-              </button>
-              <button
-                type="submit"
-                class="rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-500"
-              >
-                Lưu Skeleton
-              </button>
+            <div class="form-actions">
+              <button type="button" data-add-event class="btn btn--ghost">+ Thêm event</button>
+            </div>
+
+            <div class="form-actions">
+              <button type="reset" class="btn btn--ghost">Reset</button>
+              <button type="submit" class="btn btn--primary">Lưu Skeleton</button>
             </div>
           </form>
         </section>
 
-        <section
-          id="panel-context"
-          role="tabpanel"
-          aria-labelledby="tab-context"
-          data-panel="context"
-          class="tab-panel hidden rounded-3xl border border-slate-100 bg-white/80 p-8 shadow-card"
-        >
-          <form data-prevent-submit class="space-y-6">
-            <div class="grid gap-4 md:grid-cols-2">
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Case ID
-                <input
-                  type="text"
-                  placeholder="ví dụ: case_training_001"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Chủ đề case
-                <input
-                  type="text"
-                  placeholder="ví dụ: Ứng phó sự cố vận hành"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
+        <section id="panel-context" role="tabpanel" aria-labelledby="tab-context" data-panel="context" class="tab-panel">
+          <form class="form-section" data-prevent-submit>
+            <div class="field-grid" data-cols="2">
+              <div class="field">
+                <label class="field-label">Case ID</label>
+                <input type="text" class="input" placeholder="ví dụ: case_training_001" />
+              </div>
+              <div class="field">
+                <label class="field-label">Chủ đề case</label>
+                <input type="text" class="input" placeholder="ví dụ: Ứng phó sự cố" />
+              </div>
             </div>
 
-            <fieldset class="space-y-4 rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-              <legend class="text-sm font-semibold uppercase tracking-wide text-slate-500">Thông tin hiện trường</legend>
-              <div class="grid gap-4 md:grid-cols-2">
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Thời gian
-                  <input
-                    type="text"
-                    placeholder="ví dụ: 14:30"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Thời tiết
-                  <input
-                    type="text"
-                    placeholder="ví dụ: Mưa nhẹ, sàn trơn"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="md:col-span-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Vị trí
-                  <textarea
-                    rows="2"
-                    placeholder="ví dụ: Khu vực sản xuất chính, nhiều người qua lại."
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  ></textarea>
-                </label>
-                <label class="md:col-span-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Mức độ ồn &amp; ghi chú khác
-                  <textarea
-                    rows="2"
-                    placeholder="ví dụ: Ồn ào do máy móc, liên tục có thông báo nội bộ."
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  ></textarea>
-                </label>
+            <fieldset class="block-card">
+              <div class="block-head">
+                <h3 class="block-title">Thông tin hiện trường</h3>
               </div>
-            </fieldset>
-
-            <fieldset class="space-y-4 rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-              <legend class="text-sm font-semibold uppercase tracking-wide text-slate-500">Trạng thái ban đầu</legend>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Tóm tắt sự kiện
-                <textarea
-                  rows="2"
-                  placeholder="ví dụ: Phát hiện sự cố bất thường, cần phản ứng khẩn cấp."
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                ></textarea>
-              </label>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Tình trạng hiện tại
-                <textarea
-                  rows="3"
-                  placeholder="ví dụ: Nạn nhân mệt mỏi, dấu hiệu sinh tồn không ổn định."
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                ></textarea>
-              </label>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Ai tiếp cận đầu tiên
-                <input
-                  type="text"
-                  placeholder="ví dụ: Nhân viên trực ca"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
-            </fieldset>
-
-            <fieldset class="space-y-4 rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-              <legend class="text-sm font-semibold uppercase tracking-wide text-slate-500">Nguồn lực sẵn có</legend>
-              <p class="text-xs text-slate-500">
-                Tạo các nhóm nguồn lực phù hợp với case. Mỗi nhóm có thể đại diện cho thiết bị, nhân lực hoặc bất kỳ tài nguyên nào khác.
-              </p>
-              <div class="space-y-4" data-resource-list>
-                <div data-resource-block class="rounded-2xl border border-slate-100 bg-white/70 p-6 shadow-inner">
-                  <div class="flex flex-wrap items-center justify-between gap-3">
-                    <h3 class="text-sm font-semibold text-slate-900">Nhóm nguồn lực</h3>
-                    <button
-                      type="button"
-                      data-remove-resource
-                      class="text-xs font-semibold text-slate-500 transition hover:text-primary-600"
-                    >
-                      Xóa
-                    </button>
-                  </div>
-                  <div class="mt-4 grid gap-4 md:grid-cols-2">
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Tên nhóm
-                      <input
-                        type="text"
-                        placeholder="ví dụ: Thiết bị hỗ trợ"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
-                    <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                      Ghi chú (tùy chọn)
-                      <input
-                        type="text"
-                        placeholder="ví dụ: Đặt gần cửa ra vào"
-                        class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                      />
-                    </label>
-                  </div>
-                  <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Danh sách nguồn lực
-                    <textarea
-                      rows="3"
-                      placeholder="Ghi từng nguồn lực trên một dòng."
-                      class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                    ></textarea>
-                  </label>
+              <div class="field-grid" data-cols="2">
+                <div class="field">
+                  <label class="field-label">Thời gian</label>
+                  <input type="text" class="input" placeholder="ví dụ: 14:30" />
+                </div>
+                <div class="field">
+                  <label class="field-label">Thời tiết</label>
+                  <input type="text" class="input" placeholder="ví dụ: Mưa nhẹ" />
                 </div>
               </div>
-              <div class="mt-4 flex justify-end">
-                <button
-                  type="button"
-                  data-add-resource
-                  class="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-4 py-2 text-xs font-semibold text-primary-600 transition hover:border-primary-400 hover:bg-primary-100"
-                >
-                  + Thêm nhóm nguồn lực
-                </button>
+              <div class="field">
+                <label class="field-label">Vị trí</label>
+                <textarea class="textarea" rows="2" placeholder="Mô tả vị trí cụ thể của hiện trường."></textarea>
+              </div>
+              <div class="field">
+                <label class="field-label">Ghi chú khác</label>
+                <textarea class="textarea" rows="2" placeholder="Ví dụ: Mức độ ồn, chướng ngại vật."></textarea>
               </div>
             </fieldset>
 
-            <fieldset class="space-y-4 rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-              <legend class="text-sm font-semibold uppercase tracking-wide text-slate-500">Ràng buộc &amp; chính sách</legend>
-              <div class="grid gap-4 md:grid-cols-2">
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Ràng buộc hiện trường
-                  <textarea
-                    rows="3"
-                    placeholder="ví dụ: Không gian hạn chế&#10;Thiết bị thiếu&#10;Áp lực thời gian"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  ></textarea>
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Chính sách &amp; an toàn
-                  <textarea
-                    rows="3"
-                    placeholder="ví dụ: Ưu tiên an toàn đội ngũ&#10;Tuân thủ quy trình tiêu chuẩn&#10;Bảo mật thông tin"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  ></textarea>
-                </label>
+            <fieldset class="block-card">
+              <div class="block-head">
+                <h3 class="block-title">Nguồn lực sẵn có</h3>
+              </div>
+              <p class="form-note">Tạo một hoặc nhiều nhóm nguồn lực phù hợp với case.</p>
+              <div class="block-list" data-resource-list>
+                <div class="block-card" data-resource-block>
+                  <div class="block-head">
+                    <h4 class="block-title">Nhóm nguồn lực</h4>
+                    <button type="button" data-remove-resource class="link-action">Xóa</button>
+                  </div>
+                  <div class="field-grid" data-cols="2">
+                    <div class="field">
+                      <label class="field-label">Tên nhóm</label>
+                      <input type="text" class="input" placeholder="ví dụ: Thiết bị hỗ trợ" />
+                    </div>
+                    <div class="field">
+                      <label class="field-label">Ghi chú</label>
+                      <input type="text" class="input" placeholder="ví dụ: Đặt tại kho phụ" />
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Danh sách nguồn lực</label>
+                    <textarea class="textarea" rows="3" placeholder="Ghi từng nguồn lực trên một dòng."></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="button" data-add-resource class="btn btn--ghost">+ Thêm nhóm</button>
               </div>
             </fieldset>
 
-            <fieldset class="space-y-4 rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-              <legend class="text-sm font-semibold uppercase tracking-wide text-slate-500">Bàn giao &amp; kết thúc</legend>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Đơn vị bàn giao
-                <input
-                  type="text"
-                  placeholder="ví dụ: Đội phản ứng chuyên trách"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Trạng thái thành công cuối cùng
-                <textarea
-                  rows="3"
-                  placeholder="ví dụ: Nạn nhân ổn định, thông tin bàn giao đầy đủ, bên liên quan được trấn an."
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                ></textarea>
-              </label>
+            <fieldset class="block-card">
+              <div class="block-head">
+                <h3 class="block-title">Ràng buộc &amp; chính sách</h3>
+              </div>
+              <div class="field-grid" data-cols="2">
+                <div class="field">
+                  <label class="field-label">Ràng buộc hiện trường</label>
+                  <textarea class="textarea" rows="3" placeholder="Không gian hạn chế, thiếu thiết bị..."></textarea>
+                </div>
+                <div class="field">
+                  <label class="field-label">Chính sách áp dụng</label>
+                  <textarea class="textarea" rows="3" placeholder="Tuân thủ SOP, ưu tiên an toàn..."></textarea>
+                </div>
+              </div>
             </fieldset>
 
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
-              <button
-                type="reset"
-                class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:text-primary-600"
-              >
-                Reset
-              </button>
-              <button
-                type="submit"
-                class="rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-500"
-              >
-                Lưu Context
-              </button>
+            <fieldset class="block-card">
+              <div class="block-head">
+                <h3 class="block-title">Bàn giao &amp; kết thúc</h3>
+              </div>
+              <div class="field">
+                <label class="field-label">Đơn vị tiếp nhận</label>
+                <input type="text" class="input" placeholder="ví dụ: Đội phản ứng chuyên trách" />
+              </div>
+              <div class="field">
+                <label class="field-label">Trạng thái thành công</label>
+                <textarea class="textarea" rows="3" placeholder="Ví dụ: Nạn nhân ổn định, thông tin bàn giao đầy đủ."></textarea>
+              </div>
+            </fieldset>
+
+            <div class="form-actions">
+              <button type="reset" class="btn btn--ghost">Reset</button>
+              <button type="submit" class="btn btn--primary">Lưu Context</button>
             </div>
           </form>
         </section>
 
-        <section
-          id="panel-personas"
-          role="tabpanel"
-          aria-labelledby="tab-personas"
-          data-panel="personas"
-          class="tab-panel hidden rounded-3xl border border-slate-100 bg-white/80 p-8 shadow-card"
-        >
-          <form data-prevent-submit class="space-y-6">
-            <div class="grid gap-4 md:grid-cols-2">
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Case ID
-                <input
-                  type="text"
-                  placeholder="ví dụ: case_training_001"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
-              <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Số lượng persona (tham khảo)
-                <input
-                  type="number"
-                  min="1"
-                  placeholder="ví dụ: 4"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white/70 px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                />
-              </label>
+        <section id="panel-personas" role="tabpanel" aria-labelledby="tab-personas" data-panel="personas" class="tab-panel">
+          <form class="form-section" data-prevent-submit>
+            <div class="field-grid" data-cols="2">
+              <div class="field">
+                <label class="field-label">Case ID</label>
+                <input type="text" class="input" placeholder="ví dụ: case_training_001" />
+              </div>
+              <div class="field">
+                <label class="field-label">Số lượng persona (tham khảo)</label>
+                <input type="number" min="1" class="input" placeholder="ví dụ: 4" />
+              </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3">
-              <h2 class="text-base font-semibold text-slate-900">Danh sách Personas</h2>
-            </div>
-            <p class="text-xs text-slate-500">
-              Mỗi persona đại diện cho một nhân vật tham gia tình huống. Bạn có thể thêm hoặc xóa nhưng luôn dựa trên cấu trúc JSON gốc.
-            </p>
+            <p class="form-note">Mỗi persona đại diện cho một nhân vật tương tác trong case. Có thể thêm hoặc xóa tùy nhu cầu.</p>
 
-            <div class="space-y-4" data-persona-list>
-              <div data-persona-item class="rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                  <h3 class="text-sm font-semibold text-slate-900">Persona</h3>
-                  <button
-                    type="button"
-                    data-remove-persona
-                    class="text-xs font-semibold text-slate-500 transition hover:text-primary-600"
-                  >
-                    Xóa
-                  </button>
+            <div class="block-list" data-persona-list>
+              <div class="block-card" data-persona-item>
+                <div class="block-head">
+                  <h3 class="block-title">Persona</h3>
+                  <button type="button" data-remove-persona class="link-action">Xóa</button>
                 </div>
-                <div class="mt-4 grid gap-4 md:grid-cols-2">
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Persona ID
-                  <input
-                    type="text"
-                    placeholder="ví dụ: P1"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Tên nhân vật
-                  <input
-                    type="text"
-                    placeholder="ví dụ: Điều phối viên hiện trường"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Vai trò
-                  <input
-                    type="text"
-                    placeholder="ví dụ: Giám sát sự cố"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Tuổi
-                  <input
-                    type="number"
-                    min="0"
-                    placeholder="ví dụ: 32"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Giới tính
-                  <input
-                    type="text"
-                    placeholder="ví dụ: Nam/Nữ/Khác"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-              </div>
-              <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Lý lịch / hoàn cảnh
-                <textarea
-                  rows="3"
-                  placeholder="ví dụ: Kinh nghiệm làm việc, điểm mạnh, hạn chế."
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                ></textarea>
-              </label>
-              <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Tính cách
-                <textarea
-                  rows="3"
-                  placeholder="ví dụ: Bình tĩnh, quyết đoán, nhạy cảm."
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                ></textarea>
-              </label>
-              <div class="mt-4 grid gap-4 md:grid-cols-2">
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Mục tiêu
-                  <textarea
-                    rows="3"
-                    placeholder="ví dụ: Đảm bảo an toàn đội ngũ, hoàn thành nhiệm vụ."
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  ></textarea>
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Speech pattern
-                  <textarea
-                    rows="3"
-                    placeholder="ví dụ: Nói nhanh, nhiều thuật ngữ; hoặc chậm rãi, trấn an."
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  ></textarea>
-                </label>
-              </div>
-              <div class="mt-4 grid gap-4 md:grid-cols-3">
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Emotion ban đầu
-                  <input
-                    type="text"
-                    placeholder="ví dụ: Lo lắng"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Emotion kết thúc
-                  <input
-                    type="text"
-                    placeholder="ví dụ: Bình tĩnh"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-                <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  Voice tags
-                  <input
-                    type="text"
-                    placeholder="ví dụ: mentor, calm"
-                    class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                  />
-                </label>
-              </div>
-              <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Emotion trong quá trình
-                <textarea
-                  rows="3"
-                  placeholder="ví dụ: căng thẳng&#10;tập trung&#10;trấn an"
-                  class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-                ></textarea>
-                </label>
+                <div class="field-grid" data-cols="2">
+                  <div class="field">
+                    <label class="field-label">Persona ID</label>
+                    <input type="text" class="input" placeholder="ví dụ: P1" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Tên nhân vật</label>
+                    <input type="text" class="input" placeholder="ví dụ: Điều phối viên" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Vai trò</label>
+                    <input type="text" class="input" placeholder="ví dụ: Hỗ trợ hiện trường" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Tuổi</label>
+                    <input type="number" min="0" class="input" placeholder="ví dụ: 35" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Giới tính</label>
+                    <input type="text" class="input" placeholder="ví dụ: Nam/Nữ/Khác" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="field-label">Lý lịch / hoàn cảnh</label>
+                  <textarea class="textarea" rows="3" placeholder="Kinh nghiệm, bối cảnh làm việc..."></textarea>
+                </div>
+                <div class="field">
+                  <label class="field-label">Tính cách</label>
+                  <textarea class="textarea" rows="3" placeholder="Ví dụ: Tập trung, quyết đoán."></textarea>
+                </div>
+                <div class="field-grid" data-cols="2">
+                  <div class="field">
+                    <label class="field-label">Mục tiêu</label>
+                    <textarea class="textarea" rows="3" placeholder="Ví dụ: Hỗ trợ nhóm chính."></textarea>
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Speech pattern</label>
+                    <textarea class="textarea" rows="3" placeholder="Ví dụ: Ngắn gọn, nhiều câu hỏi xác nhận."></textarea>
+                  </div>
+                </div>
+                <div class="field-grid" data-cols="3">
+                  <div class="field">
+                    <label class="field-label">Emotion bắt đầu</label>
+                    <input type="text" class="input" placeholder="ví dụ: Lo lắng" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Emotion kết thúc</label>
+                    <input type="text" class="input" placeholder="ví dụ: An tâm" />
+                  </div>
+                  <div class="field">
+                    <label class="field-label">Voice tags</label>
+                    <input type="text" class="input" placeholder="ví dụ: mentor, calm" />
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="field-label">Cảm xúc trong quá trình</label>
+                  <textarea class="textarea" rows="3" placeholder="Ví dụ: căng thẳng, tập trung, nhẹ nhõm."></textarea>
+                </div>
               </div>
             </div>
 
-            <div class="mt-4 flex justify-end">
-              <button
-                type="button"
-                data-add-persona
-                class="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-4 py-2 text-xs font-semibold text-primary-600 transition hover:border-primary-400 hover:bg-primary-100"
-              >
-                + Thêm persona
-              </button>
+            <div class="form-actions">
+              <button type="button" data-add-persona class="btn btn--ghost">+ Thêm persona</button>
             </div>
 
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
-              <button
-                type="reset"
-                class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:text-primary-600"
-              >
-                Reset
-              </button>
-              <button
-                type="submit"
-                class="rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-500"
-              >
-                Lưu Personas
-              </button>
+            <div class="form-actions">
+              <button type="reset" class="btn btn--ghost">Reset</button>
+              <button type="submit" class="btn btn--primary">Lưu Personas</button>
             </div>
           </form>
         </section>
@@ -634,255 +327,139 @@
   </div>
 
   <template id="resource-template">
-    <div data-resource-block class="rounded-2xl border border-slate-100 bg-white/70 p-6 shadow-inner">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <h3 class="text-sm font-semibold text-slate-900">Nhóm nguồn lực</h3>
-        <button
-          type="button"
-          data-remove-resource
-          class="text-xs font-semibold text-slate-500 transition hover:text-primary-600"
-        >
-          Xóa
-        </button>
+    <div class="block-card" data-resource-block>
+      <div class="block-head">
+        <h4 class="block-title">Nhóm nguồn lực</h4>
+        <button type="button" data-remove-resource class="link-action">Xóa</button>
       </div>
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Tên nhóm
-          <input
-            type="text"
-            placeholder="ví dụ: Nhân lực hỗ trợ"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Ghi chú (tùy chọn)
-          <input
-            type="text"
-            placeholder="ví dụ: Liên hệ trực ca"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
+      <div class="field-grid" data-cols="2">
+        <div class="field">
+          <label class="field-label">Tên nhóm</label>
+          <input type="text" class="input" placeholder="ví dụ: Nhân lực hỗ trợ" />
+        </div>
+        <div class="field">
+          <label class="field-label">Ghi chú</label>
+          <input type="text" class="input" placeholder="ví dụ: Liên hệ trưởng ca" />
+        </div>
       </div>
-      <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Danh sách nguồn lực
-        <textarea
-          rows="3"
-          placeholder="Ghi từng nguồn lực trên một dòng."
-          class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-        ></textarea>
-      </label>
+      <div class="field">
+        <label class="field-label">Danh sách nguồn lực</label>
+        <textarea class="textarea" rows="3" placeholder="Ghi từng nguồn lực trên một dòng."></textarea>
+      </div>
     </div>
   </template>
 
   <template id="skeleton-event-template">
-    <div data-event-block class="rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <h3 class="text-sm font-semibold text-slate-900">Canon Event</h3>
-        <button
-          type="button"
-          data-remove-event
-          class="text-xs font-semibold text-slate-500 transition hover:text-primary-600"
-        >
-          Xóa
-        </button>
+    <div class="block-card" data-event-block>
+      <div class="block-head">
+        <h3 class="block-title">Canon Event</h3>
+        <button type="button" data-remove-event class="link-action">Xóa</button>
       </div>
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Mã sự kiện
-          <input
-            type="text"
-            placeholder="ví dụ: CE2"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Tiêu đề
-          <input
-            type="text"
-            placeholder="ví dụ: Điều phối phản ứng"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
+      <div class="field-grid" data-cols="2">
+        <div class="field">
+          <label class="field-label">Mã sự kiện</label>
+          <input type="text" class="input" placeholder="ví dụ: CE2" />
+        </div>
+        <div class="field">
+          <label class="field-label">Tiêu đề</label>
+          <input type="text" class="input" placeholder="ví dụ: Điều phối phản ứng" />
+        </div>
       </div>
-      <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Mô tả chi tiết
-        <textarea
-          rows="3"
-          placeholder="Mô tả ngắn gọn về nhiệm vụ của event."
-          class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-        ></textarea>
-      </label>
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Success Criteria
-          <textarea
-            rows="3"
-            placeholder="Ghi từng tiêu chí trên một dòng."
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          ></textarea>
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          NPC xuất hiện
-          <input
-            type="text"
-            placeholder="ví dụ: P2: Người giám sát, P3: Nhân sự hỗ trợ"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
+      <div class="field">
+        <label class="field-label">Mô tả chi tiết</label>
+        <textarea class="textarea" rows="3" placeholder="Mô tả nhiệm vụ của event."></textarea>
       </div>
-      <div class="mt-4 grid gap-4 md:grid-cols-3">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Timeout (lượt)
-          <input
-            type="number"
-            min="0"
-            placeholder="ví dụ: 3"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          On Success
-          <input
-            type="text"
-            placeholder="ví dụ: CE3"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          On Fail
-          <input
-            type="text"
-            placeholder="ví dụ: CE2_RETRY"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
+      <div class="field-grid" data-cols="2">
+        <div class="field">
+          <label class="field-label">Success criteria</label>
+          <textarea class="textarea" rows="3" placeholder="Ghi từng tiêu chí trên một dòng."></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label">NPC tham gia</label>
+          <input type="text" class="input" placeholder="ví dụ: P2, P3" />
+        </div>
+      </div>
+      <div class="field-grid" data-cols="3">
+        <div class="field">
+          <label class="field-label">Timeout</label>
+          <input type="number" min="0" class="input" placeholder="ví dụ: 3" />
+        </div>
+        <div class="field">
+          <label class="field-label">On Success</label>
+          <input type="text" class="input" placeholder="ví dụ: CE3" />
+        </div>
+        <div class="field">
+          <label class="field-label">On Fail</label>
+          <input type="text" class="input" placeholder="ví dụ: CE2_RETRY" />
+        </div>
       </div>
     </div>
   </template>
 
   <template id="persona-template">
-    <div data-persona-item class="rounded-2xl border border-slate-100 bg-white/60 p-6 shadow-inner">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <h3 class="text-sm font-semibold text-slate-900">Persona</h3>
-        <button
-          type="button"
-          data-remove-persona
-          class="text-xs font-semibold text-slate-500 transition hover:text-primary-600"
-        >
-          Xóa
-        </button>
+    <div class="block-card" data-persona-item>
+      <div class="block-head">
+        <h3 class="block-title">Persona</h3>
+        <button type="button" data-remove-persona class="link-action">Xóa</button>
       </div>
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Persona ID
-          <input
-            type="text"
-            placeholder="ví dụ: P2"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Tên nhân vật
-          <input
-            type="text"
-            placeholder="ví dụ: Điều phối viên phụ"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Vai trò
-          <input
-            type="text"
-            placeholder="ví dụ: Hỗ trợ hậu cần"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Tuổi
-          <input
-            type="number"
-            min="0"
-            placeholder="ví dụ: 35"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Giới tính
-          <input
-            type="text"
-            placeholder="ví dụ: Nam/Nữ/Khác"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
+      <div class="field-grid" data-cols="2">
+        <div class="field">
+          <label class="field-label">Persona ID</label>
+          <input type="text" class="input" placeholder="ví dụ: P2" />
+        </div>
+        <div class="field">
+          <label class="field-label">Tên nhân vật</label>
+          <input type="text" class="input" placeholder="ví dụ: Điều phối viên phụ" />
+        </div>
+        <div class="field">
+          <label class="field-label">Vai trò</label>
+          <input type="text" class="input" placeholder="ví dụ: Hỗ trợ hậu cần" />
+        </div>
+        <div class="field">
+          <label class="field-label">Tuổi</label>
+          <input type="number" min="0" class="input" placeholder="ví dụ: 32" />
+        </div>
+        <div class="field">
+          <label class="field-label">Giới tính</label>
+          <input type="text" class="input" placeholder="ví dụ: Nam/Nữ/Khác" />
+        </div>
       </div>
-      <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Lý lịch / hoàn cảnh
-        <textarea
-          rows="3"
-          placeholder="ví dụ: Kinh nghiệm liên quan, bối cảnh làm việc."
-          class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-        ></textarea>
-      </label>
-      <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Tính cách
-        <textarea
-          rows="3"
-          placeholder="ví dụ: Tập trung, nhiệt tình, cần hướng dẫn."
-          class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-        ></textarea>
-      </label>
-      <div class="mt-4 grid gap-4 md:grid-cols-2">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Mục tiêu
-          <textarea
-            rows="3"
-            placeholder="ví dụ: Hỗ trợ nhóm chính, đảm bảo quy trình chuẩn."
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          ></textarea>
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Speech pattern
-          <textarea
-            rows="3"
-            placeholder="ví dụ: Ngắn gọn, nhiều câu hỏi xác nhận."
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          ></textarea>
-        </label>
+      <div class="field">
+        <label class="field-label">Lý lịch / hoàn cảnh</label>
+        <textarea class="textarea" rows="3" placeholder="Kinh nghiệm, điểm mạnh, hạn chế..."></textarea>
       </div>
-      <div class="mt-4 grid gap-4 md:grid-cols-3">
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Emotion ban đầu
-          <input
-            type="text"
-            placeholder="ví dụ: Lo lắng"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Emotion kết thúc
-          <input
-            type="text"
-            placeholder="ví dụ: An tâm"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
-        <label class="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Voice tags
-          <input
-            type="text"
-            placeholder="ví dụ: supporter, curious"
-            class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-          />
-        </label>
+      <div class="field">
+        <label class="field-label">Tính cách</label>
+        <textarea class="textarea" rows="3" placeholder="Ví dụ: Bình tĩnh, nhanh nhẹn."></textarea>
       </div>
-      <label class="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-        Emotion trong quá trình
-        <textarea
-          rows="3"
-          placeholder="ví dụ: căng thẳng&#10;hợp tác&#10;nhẹ nhõm"
-          class="mt-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-100"
-        ></textarea>
-      </label>
+      <div class="field-grid" data-cols="2">
+        <div class="field">
+          <label class="field-label">Mục tiêu</label>
+          <textarea class="textarea" rows="3" placeholder="Ví dụ: Hỗ trợ đội chính."></textarea>
+        </div>
+        <div class="field">
+          <label class="field-label">Speech pattern</label>
+          <textarea class="textarea" rows="3" placeholder="Ví dụ: Ngắn gọn, trực tiếp."></textarea>
+        </div>
+      </div>
+      <div class="field-grid" data-cols="3">
+        <div class="field">
+          <label class="field-label">Emotion bắt đầu</label>
+          <input type="text" class="input" placeholder="ví dụ: Lo lắng" />
+        </div>
+        <div class="field">
+          <label class="field-label">Emotion kết thúc</label>
+          <input type="text" class="input" placeholder="ví dụ: Bình tĩnh" />
+        </div>
+        <div class="field">
+          <label class="field-label">Voice tags</label>
+          <input type="text" class="input" placeholder="ví dụ: mentor, calm" />
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">Cảm xúc trong quá trình</label>
+        <textarea class="textarea" rows="3" placeholder="Ví dụ: căng thẳng, tập trung, nhẹ nhõm."></textarea>
+      </div>
     </div>
   </template>
 
@@ -890,44 +467,17 @@
     document.addEventListener("DOMContentLoaded", () => {
       const tabButtons = document.querySelectorAll("[data-tab]");
       const panels = document.querySelectorAll("[data-panel]");
-      const ACTIVE_BUTTON_CLASSES = [
-        "bg-primary-600",
-        "text-white",
-        "border-primary-600",
-        "hover:bg-primary-500",
-        "hover:text-white",
-        "hover:border-primary-600",
-        "shadow-md"
-      ];
-      const INACTIVE_BUTTON_CLASSES = [
-        "bg-white",
-        "text-primary-600",
-        "hover:text-primary-700",
-        "hover:border-primary-300"
-      ];
 
       const activateTab = (tabId) => {
         tabButtons.forEach((button) => {
           const isActive = button.dataset.tab === tabId;
-          if (isActive) {
-            button.classList.add(...ACTIVE_BUTTON_CLASSES);
-            button.classList.remove(...INACTIVE_BUTTON_CLASSES);
-            button.setAttribute("aria-selected", "true");
-            button.setAttribute("tabindex", "0");
-          } else {
-            button.classList.remove(...ACTIVE_BUTTON_CLASSES);
-            button.classList.add(...INACTIVE_BUTTON_CLASSES);
-            button.setAttribute("aria-selected", "false");
-            button.setAttribute("tabindex", "-1");
-          }
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-selected", isActive ? "true" : "false");
+          button.setAttribute("tabindex", isActive ? "0" : "-1");
         });
 
         panels.forEach((panel) => {
-          if (panel.dataset.panel === tabId) {
-            panel.classList.remove("hidden");
-          } else {
-            panel.classList.add("hidden");
-          }
+          panel.classList.toggle("is-active", panel.dataset.panel === tabId);
         });
       };
 
@@ -938,9 +488,7 @@
       activateTab("skeleton");
 
       document.querySelectorAll("form[data-prevent-submit]").forEach((form) => {
-        form.addEventListener("submit", (event) => {
-          event.preventDefault();
-        });
+        form.addEventListener("submit", (event) => event.preventDefault());
       });
 
       const resourceList = document.querySelector("[data-resource-list]");
@@ -948,10 +496,7 @@
 
       const initResourceBlock = (block) => {
         const removeBtn = block.querySelector("[data-remove-resource]");
-        if (!removeBtn) {
-          return;
-        }
-
+        if (!removeBtn) return;
         removeBtn.addEventListener("click", () => {
           if (!resourceList) return;
           if (resourceList.children.length === 1) {
@@ -962,78 +507,67 @@
         });
       };
 
-      if (resourceList) {
-        resourceList.querySelectorAll("[data-resource-block]").forEach(initResourceBlock);
-      }
+      resourceList?.querySelectorAll("[data-resource-block]").forEach(initResourceBlock);
 
       const addResourceBtn = document.querySelector("[data-add-resource]");
-      if (addResourceBtn && resourceTemplate && resourceList) {
-        addResourceBtn.addEventListener("click", () => {
-          const clone = resourceTemplate.content.firstElementChild.cloneNode(true);
-          resourceList.appendChild(clone);
-          initResourceBlock(clone);
-        });
-      }
+      addResourceBtn?.addEventListener("click", () => {
+        if (!resourceTemplate || !resourceList) return;
+        const clone = resourceTemplate.content.firstElementChild.cloneNode(true);
+        resourceList.appendChild(clone);
+        initResourceBlock(clone);
+      });
 
-      const skeletonEventsContainer = document.querySelector("[data-skeleton-events]");
+      const skeletonEvents = document.querySelector("[data-skeleton-events]");
       const eventTemplate = document.getElementById("skeleton-event-template");
 
       const initEventBlock = (block) => {
         const removeBtn = block.querySelector("[data-remove-event]");
-        if (removeBtn) {
-          removeBtn.addEventListener("click", () => {
-            if (!skeletonEventsContainer) return;
-            if (skeletonEventsContainer.children.length === 1) {
-              block.querySelectorAll("input, textarea").forEach((field) => (field.value = ""));
-              return;
-            }
-            block.remove();
-          });
-        }
+        if (!removeBtn) return;
+        removeBtn.addEventListener("click", () => {
+          if (!skeletonEvents) return;
+          if (skeletonEvents.children.length === 1) {
+            block.querySelectorAll("input, textarea").forEach((field) => (field.value = ""));
+            return;
+          }
+          block.remove();
+        });
       };
 
-      if (skeletonEventsContainer) {
-        skeletonEventsContainer.querySelectorAll("[data-event-block]").forEach(initEventBlock);
-      }
+      skeletonEvents?.querySelectorAll("[data-event-block]").forEach(initEventBlock);
 
       const addEventBtn = document.querySelector("[data-add-event]");
-      if (addEventBtn && eventTemplate && skeletonEventsContainer) {
-        addEventBtn.addEventListener("click", () => {
-          const clone = eventTemplate.content.firstElementChild.cloneNode(true);
-          skeletonEventsContainer.appendChild(clone);
-          initEventBlock(clone);
-        });
-      }
+      addEventBtn?.addEventListener("click", () => {
+        if (!eventTemplate || !skeletonEvents) return;
+        const clone = eventTemplate.content.firstElementChild.cloneNode(true);
+        skeletonEvents.appendChild(clone);
+        initEventBlock(clone);
+      });
 
       const personaList = document.querySelector("[data-persona-list]");
       const personaTemplate = document.getElementById("persona-template");
 
-      const initPersonaItem = (item) => {
+      const initPersona = (item) => {
         const removeBtn = item.querySelector("[data-remove-persona]");
-        if (removeBtn) {
-          removeBtn.addEventListener("click", () => {
-            if (!personaList) return;
-            if (personaList.children.length === 1) {
-              item.querySelectorAll("input, textarea").forEach((field) => (field.value = ""));
-              return;
-            }
-            item.remove();
-          });
-        }
+        if (!removeBtn) return;
+        removeBtn.addEventListener("click", () => {
+          if (!personaList) return;
+          if (personaList.children.length === 1) {
+            item.querySelectorAll("input, textarea").forEach((field) => (field.value = ""));
+            return;
+          }
+          item.remove();
+        });
       };
 
-      if (personaList) {
-        personaList.querySelectorAll("[data-persona-item]").forEach(initPersonaItem);
-      }
+      personaList?.querySelectorAll("[data-persona-item]").forEach(initPersona);
 
       const addPersonaBtn = document.querySelector("[data-add-persona]");
-      if (addPersonaBtn && personaTemplate && personaList) {
-        addPersonaBtn.addEventListener("click", () => {
-          const clone = personaTemplate.content.firstElementChild.cloneNode(true);
-          personaList.appendChild(clone);
-          initPersonaItem(clone);
-        });
-      }
+      addPersonaBtn?.addEventListener("click", () => {
+        if (!personaTemplate || !personaList) return;
+        const clone = personaTemplate.content.firstElementChild.cloneNode(true);
+        personaList.appendChild(clone);
+        initPersona(clone);
+      });
     });
   </script>
 </body>

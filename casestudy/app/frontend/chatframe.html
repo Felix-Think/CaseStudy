@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <title>CaseStudy Chat Frame</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body class="app-body">
+  <div class="app-bg"></div>
+
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-header__inner">
+        <div class="brand">
+          <div class="brand__icon">TAT</div>
+          <div class="brand__text">
+            <span class="brand__label">Chat Frame</span>
+            <h1 class="brand__title">Trao đổi nhanh cùng CaseStudy</h1>
+          </div>
+        </div>
+        <nav class="header-actions">
+          <a class="btn btn--ghost action-desktop" href="/">Trang chính</a>
+          <a class="btn btn--ghost action-desktop" href="/nhap-case">Nhập Case</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="app-main">
+      <div class="chat-shell">
+        <section class="chat-panel">
+          <header class="chat-panel__head">
+            <div>
+              <p class="eyebrow eyebrow--primary">Chat Frame</p>
+              <h2 class="chat-panel__title">Hộp thoại gần nhất</h2>
+            </div>
+            <button id="clear-history" class="btn btn--ghost" type="button">Xóa lịch sử</button>
+          </header>
+
+          <div id="chat-history" class="chat-scroll chat-scroll--window">
+            <article class="message message--ai">
+              <div class="message__avatar">AI</div>
+              <div class="message__body">
+                <div class="message__bubble">
+                  <p>Chào bạn! Nhập câu hỏi hoặc checklist ở phía dưới, mình sẽ phản hồi ngay.</p>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <form id="chat-form" class="composer" autocomplete="off">
+            <label for="chat-input" class="composer__label">Nhập nội dung • Ctrl/Cmd + Enter để gửi</label>
+            <div class="composer__field">
+              <textarea
+                id="chat-input"
+                class="composer__textarea"
+                rows="3"
+                placeholder="Ví dụ: Liệt kê checklist để đánh giá chất lượng dữ liệu dẫn đầu..."
+              ></textarea>
+              <div class="composer__footer">
+                <div class="chip-group">
+                  <span class="tag tag--action" data-quick>Checklist</span>
+                  <span class="tag tag--action" data-quick>Gợi ý prompt</span>
+                  <span class="tag tag--action" data-quick>Tóm tắt</span>
+                </div>
+                <button type="submit" class="btn btn--primary">
+                  Gửi
+                  <svg class="btn__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M6 12h12m0 0-4 4m4-4-4-4" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <p class="composer__note">Chat Frame lưu tạm trên phiên trình duyệt. Sao chép nội dung nếu bạn cần chia sẻ.</p>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const chatHistory = document.getElementById("chat-history");
+    const chatForm = document.getElementById("chat-form");
+    const chatInput = document.getElementById("chat-input");
+    const clearBtn = document.getElementById("clear-history");
+
+    const scrollChat = () => {
+      if (!chatHistory) return;
+      chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: "smooth" });
+    };
+
+    const appendMessage = (text, role = "user") => {
+      if (!chatHistory || !text) return;
+
+      const article = document.createElement("article");
+      article.className = `message ${role === "user" ? "message--user" : "message--ai"}`;
+
+      const avatar = document.createElement("div");
+      avatar.className = "message__avatar";
+      avatar.textContent = role === "user" ? "Bạn" : "AI";
+      article.appendChild(avatar);
+
+      const body = document.createElement("div");
+      body.className = "message__body";
+
+      const bubble = document.createElement("div");
+      bubble.className = "message__bubble";
+      if (role === "user") {
+        bubble.classList.add("message__bubble--user");
+      }
+      bubble.textContent = text;
+
+      body.appendChild(bubble);
+      article.appendChild(body);
+      chatHistory.appendChild(article);
+      scrollChat();
+    };
+
+    chatForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const value = chatInput?.value?.trim();
+      if (!value) return;
+
+      appendMessage(value, "user");
+      chatInput.value = "";
+
+      window.setTimeout(() => {
+        appendMessage(`Mình đã ghi nhận: "${value}". Bạn muốn mình tạo checklist hay bước tiếp theo?`, "ai");
+      }, 350);
+    });
+
+    chatInput?.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        chatForm?.requestSubmit();
+      }
+    });
+
+    clearBtn?.addEventListener("click", () => {
+      if (!chatHistory) return;
+      chatHistory.innerHTML = "";
+      appendMessage("Lịch sử đã được làm mới. Hãy bắt đầu cuộc trò chuyện mới!", "ai");
+    });
+
+    document.querySelectorAll("[data-quick]").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        if (!chatInput) return;
+        const text = chip.textContent || "";
+        switch (text.toLowerCase()) {
+          case "checklist":
+            chatInput.value = "Tạo checklist đánh giá chất lượng dữ liệu.";
+            break;
+          case "gợi ý prompt":
+            chatInput.value = "Gợi ý prompt phân tích cảm xúc khách hàng.";
+            break;
+          case "tóm tắt":
+            chatInput.value = "Tóm tắt tiến độ case tuần này giúp mình.";
+            break;
+          default:
+            chatInput.value = text;
+        }
+        chatInput.focus();
+      });
+    });
+
+    window.addEventListener("load", scrollChat);
+  </script>
+</body>
+</html>

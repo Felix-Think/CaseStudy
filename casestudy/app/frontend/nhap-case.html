@@ -959,8 +959,9 @@
         });
 
         panels.forEach((panel) => {
-        const isActive = panel.dataset.panel === tabId;
-        panel.classList.toggle("is-active", isActive);
+          const isActive = panel.dataset.panel === tabId;
+          panel.classList.toggle("hidden", !isActive);
+          panel.classList.toggle("is-active", isActive);
         });
 
       };

@@ -1,5 +1,5 @@
 {
-  "case_id": "drowning_pool_001",
+  "case_id": "drowning_pool_002",
   "personas": [
     {
       "id": "P1",
@@ -22,7 +22,7 @@
         "victim",
         "panic"
       ],
-      "case_id": "drowning_pool_001"
+      "case_id": "drowning_pool_002"
     },
     {
       "id": "P2",
@@ -45,7 +45,7 @@
         "relative",
         "worried"
       ],
-      "case_id": "drowning_pool_001"
+      "case_id": "drowning_pool_002"
     },
     {
       "id": "P3",
@@ -67,7 +67,7 @@
         "staff",
         "calm"
       ],
-      "case_id": "drowning_pool_001"
+      "case_id": "drowning_pool_002"
     },
     {
       "id": "P4",
@@ -89,7 +89,7 @@
         "bystander",
         "helpful"
       ],
-      "case_id": "drowning_pool_001"
+      "case_id": "drowning_pool_002"
     }
   ]
 }

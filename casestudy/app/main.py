@@ -32,4 +32,19 @@ async def serve_nhap_case() -> FileResponse:
     return FileResponse(nhap_case_path)
 
 
+@app.get("/chatframe", response_class=FileResponse)
+async def serve_chatframe() -> FileResponse:
+    chatframe_path = FRONTEND_DIR / "chatframe.html"
+    if not chatframe_path.exists():
+        raise HTTPException(status_code=404, detail="chatframe.html not found.")
+    return FileResponse(chatframe_path)
+
+
+@app.get("/case-list", response_class=FileResponse)
+async def serve_case_list() -> FileResponse:
+    case_list_path = FRONTEND_DIR / "listOfCase.html"
+    if not case_list_path.exists():
+        raise HTTPException(status_code=404, detail="listOfCase.html not found.")
+    return FileResponse(case_list_path)
+
 app.include_router(api_router, prefix="/api")

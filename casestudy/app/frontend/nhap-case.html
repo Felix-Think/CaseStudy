@@ -19,7 +19,7 @@
             }
           },
           fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui']
+            sans: ['Arial', 'ui-sans-serif', 'system-ui']
           },
           boxShadow: {
             card: '0 20px 45px -25px rgba(15, 23, 42, 0.35)'
@@ -28,9 +28,22 @@
       }
     };
   </script>
+  <style>
+    :root {
+      font-family: Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    body,
+    input,
+    textarea,
+    button,
+    select {
+      font-family: inherit;
+    }
+  </style>
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-800">
+<body class="min-h-screen bg-slate-50 text-slate-800 font-sans">
   <div class="relative flex min-h-screen flex-col">
     <div class="absolute inset-0 -z-10 bg-gradient-to-br from-primary-50 via-white to-slate-100"></div>
     <header class="sticky top-0 z-40 border-b border-slate-100 bg-white/80 backdrop-blur">
@@ -51,39 +64,49 @@
           </p>
         </header>
 
-        <div class="flex flex-wrap gap-3" role="tablist" aria-label="Biểu mẫu nhập case">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap gap-3" role="tablist" aria-label="Biểu mẫu nhập case">
+            <button
+              type="button"
+              role="tab"
+              id="tab-skeleton"
+              data-tab="skeleton"
+              aria-controls="panel-skeleton"
+              aria-selected="true"
+              class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
+            >
+              Nhập Skeleton
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-context"
+              data-tab="context"
+              aria-controls="panel-context"
+              aria-selected="false"
+              class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
+            >
+              Nhập Context
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-personas"
+              data-tab="personas"
+              aria-controls="panel-personas"
+              aria-selected="false"
+              class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
+            >
+              Nhập Personas
+            </button>
+          </div>
           <button
             type="button"
-            role="tab"
-            id="tab-skeleton"
-            data-tab="skeleton"
-            aria-controls="panel-skeleton"
-            aria-selected="true"
-            class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
+            id="save-case-button"
+            class="rounded-full border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-400 transition focus:outline-none focus:ring-2 focus:ring-primary-100 cursor-not-allowed"
+            disabled
           >
-            Nhập Skeleton
-          </button>
-          <button
-            type="button"
-            role="tab"
-            id="tab-context"
-            data-tab="context"
-            aria-controls="panel-context"
-            aria-selected="false"
-            class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
-          >
-            Nhập Context
-          </button>
-          <button
-            type="button"
-            role="tab"
-            id="tab-personas"
-            data-tab="personas"
-            aria-controls="panel-personas"
-            aria-selected="false"
-            class="tab-trigger inline-flex items-center gap-2 rounded-full border border-primary-200 px-5 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-primary-100"
-          >
-            Nhập Personas
+            Lưu Case
           </button>
         </div>
 
@@ -217,7 +240,7 @@
               </div>
             </div>
 
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
               <button
                 type="reset"
                 class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:text-primary-600"
@@ -225,10 +248,11 @@
                 Reset
               </button>
               <button
-                type="submit"
+                type="button"
+                data-next-tab="context"
                 class="rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-500"
               >
-                Lưu Skeleton
+                Sang tab Context
               </button>
             </div>
           </form>
@@ -425,20 +449,31 @@
               </label>
             </fieldset>
 
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
               <button
                 type="reset"
                 class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:text-primary-600"
               >
                 Reset
               </button>
-              <button
-                type="submit"
-                class="rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-500"
-              >
-                Lưu Context
-              </button>
+              <div class="flex items-center gap-3">
+                <button
+                  type="button"
+                  data-prev-tab="skeleton"
+                  class="rounded-full border border-primary-200 px-4 py-2 text-sm font-semibold text-primary-600 transition hover:bg-primary-50"
+                >
+                  Quay lại Skeleton
+                </button>
+                <button
+                  type="button"
+                  data-next-tab="personas"
+                  class="rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-500"
+                >
+                  Sang tab Personas
+                </button>
+              </div>
             </div>
+        </div>
           </form>
         </section>
 
@@ -613,7 +648,7 @@
               </button>
             </div>
 
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
               <button
                 type="reset"
                 class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-primary-200 hover:text-primary-600"
@@ -621,10 +656,11 @@
                 Reset
               </button>
               <button
-                type="submit"
-                class="rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-500"
+                type="button"
+                data-prev-tab="context"
+                class="rounded-full border border-primary-200 px-4 py-2 text-sm font-semibold text-primary-600 transition hover:bg-primary-50"
               >
-                Lưu Personas
+                Quay lại Context
               </button>
             </div>
           </form>
@@ -923,12 +959,10 @@
         });
 
         panels.forEach((panel) => {
-          if (panel.dataset.panel === tabId) {
-            panel.classList.remove("hidden");
-          } else {
-            panel.classList.add("hidden");
-          }
+        const isActive = panel.dataset.panel === tabId;
+        panel.classList.toggle("is-active", isActive);
         });
+
       };
 
       tabButtons.forEach((button) => {
@@ -938,6 +972,7 @@
       activateTab("skeleton");
 
       const API_ENDPOINT = "/api/cases";
+      const saveCaseButton = document.getElementById("save-case-button");
 
       const ensureToastRoot = () => {
         let root = document.getElementById("toast-root");
@@ -1013,7 +1048,7 @@
         const normalizedKeyword = keyword.toLowerCase();
         const labels = Array.from(root.querySelectorAll("label"));
         for (const label of labels) {
-          const text = (label.textContent || "").toLowerCase().replace(/\s+/g, " ").trim();
+          const text = (label.textContent || "").toLowerCase().replace(/\s+/g, " " ).trim();
           if (text.includes(normalizedKeyword)) {
             return label.querySelector("input, textarea");
           }
@@ -1209,7 +1244,7 @@
             const age = ageRaw ? Number.parseInt(ageRaw, 10) : null;
             const voiceTags = voiceTagsRaw
               ? voiceTagsRaw
-                  .split(/[,;]/)
+                  .split(/[;,]/)
                   .map((tag) => tag.trim())
                   .filter(Boolean)
               : [];
@@ -1265,6 +1300,148 @@
         };
       };
 
+      const getValidationState = () => {
+        const skeleton = extractSkeleton();
+        const context = extractContext();
+        const personasPayload = extractPersonas();
+
+        const issues = {
+          global: [],
+          skeleton: [],
+          context: [],
+          personas: [],
+        };
+
+        const resolvedCaseId =
+          skeleton.case_id || context.case_id || personasPayload.case_id;
+
+        if (!resolvedCaseId) {
+          issues.global.push("Case ID");
+        }
+
+        if (!skeleton.title) {
+          issues.skeleton.push("Tên case");
+        }
+        if (!skeleton.canon_events.length) {
+          issues.skeleton.push("Ít nhất 1 Canon Event");
+        } else {
+          skeleton.canon_events.forEach((event, index) => {
+            if (!event.title) {
+              issues.skeleton.push(`Canon Event ${index + 1}: tiêu đề`);
+            }
+            if (!event.description) {
+              issues.skeleton.push(`Canon Event ${index + 1}: mô tả`);
+            }
+          });
+        }
+
+        const initialContext = context.initial_context || {};
+        const scene = initialContext.scene || {};
+        const indexEvent = initialContext.index_event || {};
+
+        if (!context.topic) {
+          issues.context.push("Chủ đề case");
+        }
+        if (!scene.time) {
+          issues.context.push("Thời gian trong Scene");
+        }
+        if (!scene.location) {
+          issues.context.push("Địa điểm trong Scene");
+        }
+        if (!indexEvent.summary) {
+          issues.context.push("Tóm tắt sự kiện ban đầu");
+        }
+        if (!indexEvent.who_first_on_scene) {
+          issues.context.push("Ai tiếp cận đầu tiên");
+        }
+
+        if (!personasPayload.personas.length) {
+          issues.personas.push("Ít nhất 1 persona");
+        } else {
+          personasPayload.personas.forEach((persona, index) => {
+            if (!persona.name) {
+              issues.personas.push(`Persona ${index + 1}: tên`);
+            }
+            if (!persona.role) {
+              issues.personas.push(`Persona ${index + 1}: vai trò`);
+            }
+          });
+        }
+
+        const isComplete =
+          !issues.global.length &&
+          !issues.skeleton.length &&
+          !issues.context.length &&
+          !issues.personas.length;
+
+        return {
+          resolvedCaseId,
+          skeleton,
+          context,
+          personasPayload,
+          issues,
+          isComplete,
+        };
+      };
+
+      const updateSaveButtonState = () => {
+        if (!saveCaseButton) {
+          return;
+        }
+        const { isComplete } = getValidationState();
+        saveCaseButton.disabled = !isComplete;
+        saveCaseButton.classList.toggle("cursor-not-allowed", !isComplete);
+        saveCaseButton.classList.toggle("bg-white", !isComplete);
+        saveCaseButton.classList.toggle("text-slate-400", !isComplete);
+        saveCaseButton.classList.toggle("border-slate-200", !isComplete);
+        saveCaseButton.classList.toggle("bg-primary-600", isComplete);
+        saveCaseButton.classList.toggle("text-white", isComplete);
+        saveCaseButton.classList.toggle("border-transparent", isComplete);
+        saveCaseButton.classList.toggle("hover:bg-primary-500", isComplete);
+      };
+
+      const formatMissingMessages = (issues) => {
+        const parts = [];
+        if (issues.global.length) {
+          parts.push(`Chung: ${issues.global.join(", ")}`);
+        }
+        if (issues.skeleton.length) {
+          parts.push(`Skeleton: ${issues.skeleton.join(", ")}`);
+        }
+        if (issues.context.length) {
+          parts.push(`Context: ${issues.context.join(", ")}`);
+        }
+        if (issues.personas.length) {
+          parts.push(`Personas: ${issues.personas.join(", ")}`);
+        }
+        return parts.join(" | ");
+      };
+
+      const resetAllForms = () => {
+        document.querySelectorAll("form[data-prevent-submit]").forEach((form) => {
+          form.reset();
+        });
+
+        const cleanupContainer = (selector, itemSelector) => {
+          const container = document.querySelector(selector);
+          if (!container) return;
+          const items = Array.from(container.querySelectorAll(itemSelector));
+          items.forEach((item, index) => {
+            if (index === 0) {
+              item.querySelectorAll("input, textarea").forEach((field) => {
+                field.value = "";
+              });
+            } else {
+              item.remove();
+            }
+          });
+        };
+
+        cleanupContainer("[data-resource-list]", "[data-resource-block]");
+        cleanupContainer("[data-skeleton-events]", "[data-event-block]");
+        cleanupContainer("[data-persona-list]", "[data-persona-item]");
+      };
+
       const toggleButtonState = (button, isLoading) => {
         if (!button) return;
         if (isLoading) {
@@ -1282,60 +1459,114 @@
         }
       };
 
+      const handleCaseSave = async () => {
+        if (!saveCaseButton) {
+          return;
+        }
+
+        const validation = getValidationState();
+        if (!validation.isComplete) {
+          const message = formatMissingMessages(validation.issues);
+          showNotification(
+            message
+              ? `Vui lòng bổ sung thông tin trước khi lưu: ${message}`
+              : "Vui lòng hoàn thiện cả 3 biểu mẫu trước khi lưu.",
+            "error"
+          );
+          return;
+        }
+
+        toggleButtonState(saveCaseButton, true);
+
+        try {
+          const payload = buildCasePayload();
+          if (!payload.skeleton.canon_events.length) {
+            throw new Error("Vui lòng nhập ít nhất một Canon Event.");
+          }
+          if (!payload.personas.personas.length) {
+            throw new Error("Vui lòng nhập ít nhất một Persona.");
+          }
+
+          showNotification("Đang gửi dữ liệu lên máy chủ...", "info");
+          const response = await fetch(API_ENDPOINT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "same-origin",
+            body: JSON.stringify(payload),
+          });
+
+          const contentType = response.headers.get("content-type") || "";
+          const responseData = contentType.includes("application/json") ? await response.json() : null;
+
+          if (!response.ok) {
+            const detail =
+              (responseData && (responseData.detail || responseData.message)) ||
+              "Không thể lưu case. Vui lòng thử lại.";
+            throw new Error(detail);
+          }
+
+          const payloadInfo = {
+            case_id: responseData?.case_id ?? payload.case_id,
+            personas_count:
+              typeof responseData?.personas_count === "number"
+                ? responseData.personas_count
+                : payload.personas.personas.length,
+          };
+
+          showNotification(
+            `Đã lưu case '${payloadInfo.case_id}' thành công (${payloadInfo.personas_count} personas).`
+          );
+          resetAllForms();
+        } catch (error) {
+          console.error(error);
+          showNotification(error.message || "Có lỗi xảy ra khi lưu case.", "error");
+        } finally {
+          toggleButtonState(saveCaseButton, false);
+          updateSaveButtonState();
+        }
+      };
+
+      document.addEventListener("input", () => {
+        updateSaveButtonState();
+      });
+
       document.querySelectorAll("form[data-prevent-submit]").forEach((form) => {
-        form.addEventListener("submit", async (event) => {
+        form.addEventListener("submit", (event) => {
           event.preventDefault();
-          const submitter = event.submitter || form.querySelector('button[type="submit"]');
-          toggleButtonState(submitter, true);
+          handleCaseSave();
+        });
+        form.addEventListener("reset", () => {
+          setTimeout(() => {
+            updateSaveButtonState();
+          }, 0);
+        });
+      });
 
-          try {
-            const payload = buildCasePayload();
-            if (!payload.skeleton.canon_events.length) {
-              throw new Error("Vui lòng nhập ít nhất một Canon Event.");
-            }
-            if (!payload.personas.personas.length) {
-              throw new Error("Vui lòng nhập ít nhất một Persona.");
-            }
+      if (saveCaseButton) {
+        saveCaseButton.addEventListener("click", handleCaseSave);
+      }
 
-            showNotification("Đang gửi dữ liệu lên máy chủ...", "info");
-            const response = await fetch(API_ENDPOINT, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              credentials: "same-origin",
-              body: JSON.stringify(payload),
-            });
-
-            const contentType = response.headers.get("content-type") || "";
-            const responseData = contentType.includes("application/json") ? await response.json() : null;
-
-            if (!response.ok) {
-              const detail =
-                (responseData && (responseData.detail || responseData.message)) ||
-                "Không thể lưu case. Vui lòng thử lại.";
-              throw new Error(detail);
-            }
-
-            const payloadInfo = {
-              case_id: responseData?.case_id ?? payload.case_id,
-              personas_count:
-                typeof responseData?.personas_count === "number"
-                  ? responseData.personas_count
-                  : payload.personas.personas.length,
-            };
-
-            showNotification(
-              `Đã lưu case '${payloadInfo.case_id}' thành công (${payloadInfo.personas_count} personas).`
-            );
-          } catch (error) {
-            console.error(error);
-            showNotification(error.message || "Có lỗi xảy ra khi lưu case.", "error");
-          } finally {
-            toggleButtonState(submitter, false);
+      document.querySelectorAll("[data-next-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.dataset.nextTab;
+          if (target) {
+            activateTab(target);
           }
         });
       });
+
+      document.querySelectorAll("[data-prev-tab]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.dataset.prevTab;
+          if (target) {
+            activateTab(target);
+          }
+        });
+      });
+
+      updateSaveButtonState();
 
       const resourceList = document.querySelector("[data-resource-list]");
       const resourceTemplate = document.getElementById("resource-template");
@@ -1349,10 +1580,14 @@
         removeBtn.addEventListener("click", () => {
           if (!resourceList) return;
           if (resourceList.children.length === 1) {
-            block.querySelectorAll("input, textarea").forEach((field) => (field.value = ""));
+            block.querySelectorAll("input, textarea").forEach((field) => {
+              field.value = "";
+            });
+            updateSaveButtonState();
             return;
           }
           block.remove();
+          updateSaveButtonState();
         });
       };
 
@@ -1366,6 +1601,7 @@
           const clone = resourceTemplate.content.firstElementChild.cloneNode(true);
           resourceList.appendChild(clone);
           initResourceBlock(clone);
+          updateSaveButtonState();
         });
       }
 
@@ -1378,10 +1614,14 @@
           removeBtn.addEventListener("click", () => {
             if (!skeletonEventsContainer) return;
             if (skeletonEventsContainer.children.length === 1) {
-              block.querySelectorAll("input, textarea").forEach((field) => (field.value = ""));
+              block.querySelectorAll("input, textarea").forEach((field) => {
+                field.value = "";
+              });
+              updateSaveButtonState();
               return;
             }
             block.remove();
+            updateSaveButtonState();
           });
         }
       };
@@ -1396,6 +1636,7 @@
           const clone = eventTemplate.content.firstElementChild.cloneNode(true);
           skeletonEventsContainer.appendChild(clone);
           initEventBlock(clone);
+          updateSaveButtonState();
         });
       }
 
@@ -1408,10 +1649,14 @@
           removeBtn.addEventListener("click", () => {
             if (!personaList) return;
             if (personaList.children.length === 1) {
-              item.querySelectorAll("input, textarea").forEach((field) => (field.value = ""));
+              item.querySelectorAll("input, textarea").forEach((field) => {
+                field.value = "";
+              });
+              updateSaveButtonState();
               return;
             }
             item.remove();
+            updateSaveButtonState();
           });
         }
       };
@@ -1426,6 +1671,7 @@
           const clone = personaTemplate.content.firstElementChild.cloneNode(true);
           personaList.appendChild(clone);
           initPersonaItem(clone);
+          updateSaveButtonState();
         });
       }
     });

@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import json
+import shutil
+import tempfile
 from copy import deepcopy
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
 from casestudy.app.core.config import get_settings
-from casestudy.app.crud.case_crud import fetch_cases, upsert_case_documents
+from casestudy.app.crud.case_crud import fetch_cases
 from casestudy.app.models.case import CaseDocument
 from casestudy.app.schemas.case import (
     CaseCreatePayload,
@@ -15,6 +17,7 @@ from casestudy.app.schemas.case import (
     CaseSummary,
 )
 from casestudy.utils.load import load_case_from_local
+from casestudy.utils.save import save_case
 
 
 class CaseService:
@@ -81,21 +84,41 @@ class CaseService:
         personas = self._prepare_personas(case_id, payload.personas)
         skeleton = self._prepare_skeleton(case_id, payload.skeleton)
 
-        try:
-            personas_count, _ = upsert_case_documents(
-                case_id=case_id,
-                context=context,
-                personas=personas,
-                skeleton=skeleton,
-            )
-        except RuntimeError as exc:
-            raise RuntimeError("Không thể kết nối MongoDB để lưu case.") from exc
-        except Exception as exc:  # pragma: no cover - phòng xa lỗi PyMongo
-            raise RuntimeError("Lỗi ghi dữ liệu case vào MongoDB.") from exc
-
+        cleanup_dir = None
         local_path = None
+
         if persist_local:
-            local_path = self._write_local_case(case_id, context, personas, skeleton)
+            working_dir = self._write_local_case(case_id, context, personas, skeleton)
+            local_path = working_dir
+        else:
+            base_storage = self.settings.case_data_dir
+            base_storage.mkdir(parents=True, exist_ok=True)
+            temp_path = Path(tempfile.mkdtemp(prefix=f"{case_id}_", dir=str(base_storage)))
+            working_dir = self._write_local_case(
+                case_id,
+                context,
+                personas,
+                skeleton,
+                base_dir=temp_path,
+            )
+            cleanup_dir = working_dir
+
+        try:
+            saved_context, saved_personas, saved_skeleton = save_case(str(working_dir))
+        except Exception as exc:
+            if cleanup_dir:
+                shutil.rmtree(cleanup_dir, ignore_errors=True)
+            raise RuntimeError("Không thể lưu case vào MongoDB.") from exc
+
+        if saved_context is None or saved_personas is None or saved_skeleton is None:
+            if cleanup_dir:
+                shutil.rmtree(cleanup_dir, ignore_errors=True)
+            raise RuntimeError("Không thể lưu case vào MongoDB.")
+
+        if cleanup_dir:
+            shutil.rmtree(cleanup_dir, ignore_errors=True)
+
+        personas_count = len(saved_personas)
 
         return CaseCreateResponse(
             case_id=case_id,
@@ -167,14 +190,16 @@ class CaseService:
         context: Dict[str, Any],
         personas: List[Dict[str, Any]],
         skeleton: Dict[str, Any],
+        *,
+        base_dir: Path | None = None,
     ) -> Path:
-        base_dir = self.settings.case_data_dir / case_id
-        base_dir.mkdir(parents=True, exist_ok=True)
+        target_dir = base_dir or (self.settings.case_data_dir / case_id)
+        target_dir.mkdir(parents=True, exist_ok=True)
 
-        with (base_dir / "context.json").open("w", encoding="utf-8") as f:
+        with (target_dir / "context.json").open("w", encoding="utf-8") as f:
             json.dump(context, f, ensure_ascii=False, indent=2)
 
-        with (base_dir / "personas.json").open("w", encoding="utf-8") as f:
+        with (target_dir / "personas.json").open("w", encoding="utf-8") as f:
             json.dump(
                 {"case_id": case_id, "personas": personas},
                 f,
@@ -182,7 +207,7 @@ class CaseService:
                 indent=2,
             )
 
-        with (base_dir / "skeleton.json").open("w", encoding="utf-8") as f:
+        with (target_dir / "skeleton.json").open("w", encoding="utf-8") as f:
             json.dump(skeleton, f, ensure_ascii=False, indent=2)
 
-        return base_dir
+        return target_dir

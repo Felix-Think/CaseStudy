@@ -300,6 +300,9 @@
         appendMessage(content, role, normalizeSpeaker(speaker, role));
       });
 
+      if (state?.scene_summary){
+        appendMessage(state.scene_summary, "ai", "Scene Summary");
+      }
       if (state?.system_notice) {
         appendMessage(state.system_notice, "ai", "System");
       }
